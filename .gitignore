@@ -1,0 +1,4 @@
+# exclude local settings
+capture/settings/local.py
+*.pyc
+
