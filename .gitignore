@@ -1,4 +1,6 @@
 # exclude local settings
 capture/settings/local.py
 *.pyc
+debug.log
+debug2.log
 
