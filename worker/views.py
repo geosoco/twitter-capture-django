@@ -1,5 +1,8 @@
 from worker.models import Worker
 from django.views.generic import View, ListView
+from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
+
 
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
@@ -36,3 +39,25 @@ class WorkerListView(ListView):
 		#context['project_root'] = settings.PROJECT_ROOT
 		#context['static_root'] = settings.STATIC_ROOT
 		return context
+
+#class WorkerCreate(LoginRequiredMixin, CreateView):
+class WorkerCreate(CreateView):
+	model = Worker
+	fields = [ 'name', 'description' ]
+	template_name = 'create.html'
+
+	def form_valid(self, form):
+
+		now = datetime.now()
+		form.instance.created_by = self.request.user
+		form.instance.status = Job.STATUS_CREATED
+
+		return super(CaptureCreate, self).form_valid(form)
+
+
+
+#class WorkerDetails(LoginRequiredMixin, DetailView):
+class WorkerDetails( DetailView):	
+	model = Worker
+	template_name = 'detail.html'
+

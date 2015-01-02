@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+
+
+{% block content %}
+
+<div class="container">
+	<form action="" method="post" class="form"  enctype="multipart/form-data">{% csrf_token %}
+		<div>
+		    {{ form.as_p }}
+		</div>
+
+		<input type="submit" value="Create Capture Job"  class="btn btn-default" />
+	</form>
+</div>
+
+
+{% endblock %} 
+
+
+{% block end_scripts %}
+{% endblock %}
