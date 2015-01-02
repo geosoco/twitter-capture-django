@@ -1,5 +1,5 @@
 from django.contrib import admin
-from workers import models
+from worker import models
 
 
 class WorkerAdmin(CreatedByBaseAdmin):
