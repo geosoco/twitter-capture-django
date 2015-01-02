@@ -5,27 +5,19 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.urlresolvers import reverse
 
+from base.models import FullAuditModel, ModifiedByMixin
+from worker.models import Worker
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 
 
-class Worker(models.Model):
-	"""
-		Model for capture workers (the machines doing the capturing)
-	"""
-
-	name = models.CharField(max_length=256)
-	description = models.TextField()
-
-	creation_date = models.DateTimeField(auto_now_add=True)
-	created_by = models.ForeignKey(User, null=True, blank=True)
-
 	
 
 
-class Job(models.Model):
+class Job(FullAuditModel):
 	"""
 		Model for a capture
 	"""
@@ -53,9 +45,6 @@ class Job(models.Model):
 	name = models.CharField(max_length=256)
 	description = models.TextField()
 
-	creation_date = models.DateTimeField(auto_now_add=True)
-	created_by = models.ForeignKey(User, null=True, blank=True)
-
 	twitter_keywords = models.TextField()
 
 	status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_CREATED)
@@ -73,16 +62,13 @@ class Job(models.Model):
 
 
 
-class JobModification(models.Model):
+class JobModification(ModifiedByMixin):
 	"""
 		Model for change history of a capturejob 
 	"""
 	changes = models.TextField()
 
 	job = models.ForeignKey(Job, blank=True)
-
-	modification_date = models.DateTimeField(auto_now_add=True)
-	modified_by = models.ForeignKey(User, null=True, blank=True)
 
 
 
