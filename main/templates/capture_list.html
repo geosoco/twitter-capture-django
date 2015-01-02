@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+
+
+{% block page_style %} 
+.audio-clip-cntr { } 
+.audio-clip { width: 400px; height: 150px; background-color: #eee; display: block; } 
+.hidden { display: none } 
+
+.trans-text textarea { width: 100%; }
+.trans-text { margin-bottom: 10px; }
+.fixed-popup { position: fixed; top: 0; left: 0; z-index: 10000; width: 100%; display: none;}
+{% endblock %} 
+{% block content %}
+<div class="fixed-popup">
+    <div id="save-error-alert" class="alert alert-danger fade" role="alert">
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+      <h4>Save Error</h4>
+
+      <p>An error occurred while attempting to save. </p>
+      <p><b>Status Code:</b><span id="error-status-code"></span></p>
+      <pre id="error-satus-text">
+      </pre>
+    </div>
+</div>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Captures</h1>
+        </div>
+    </div>
+
+
+
+    {% if object_list %} 
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>    
+                        {% for job in object_list %}
+                            <tr data-id="{{job.id}}">
+                                <td>{{job.name}}</td>
+                                <td>{{job.description}}</td>
+                                <td>
+                                    {% if job.status != 1 %}
+                                    <button type="button" class="btn btn-primary play-stop ">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                    {% else %}
+                                    <button type="button" class="btn btn-danger play-stop ">
+                                        <span class="glyphicon glyphicon-stop"></span>
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        {% if is_paginated %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                        <a href="/clips/{{recording.id}}/?page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+                        <span class="page-current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        <ul>
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.has_next %}
+                                <li><a href="/clips/{{recording.id}}/?page={{ i }}">{{i}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                        {% if page_obj.has_next %}
+                        <a href="/clips/{{recording.id}}/?page={{ page_obj.next_page_number }}">next</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %} 
+
+    {% else %}
+    <h3>Clips</h3>
+    <p>No clips found!!! :(</p>
+    {% endif %}
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="debug-code-outer-cntr">
+                <button type="button" data-toggle="collapse" data-target="#debug-code-cntr" class="btn btn-danger">Show debug</button>
+                <div id="debug-code-cntr" class="collapse">
+                    <code>{{debug}}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div>
+    {{ form.as_p }}
+</div>
+
+
+
+
+{% endblock %} 
+
+
+
+{% block end_scripts %}
+
+
+<script>
+
+//
+// getCookie is taken from http://stackoverflow.com/questions/10730362/get-cookie-by-name
+//
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+
+
+//
+// csrfSafeMethod from: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+//
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+
+
+function getOrDefault($el, name, defaultValue) {
+    var val = $el.data(name);
+
+    return (val !== undefined) ? val : defaultValue;
+}
+
+
+$(function() {
+
+
+    // debug collapsible item
+    $("#accordian").collapse();
+
+    // set up to add csrf token
+    // taken from https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                var csrftoken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
