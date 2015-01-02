@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+
+
+{% block page_style %} 
+.audio-clip-cntr { } 
+.audio-clip { width: 400px; height: 150px; background-color: #eee; display: block; } 
+.hidden { display: none } 
+
+.trans-text textarea { width: 100%; }
+.trans-text { margin-bottom: 10px; }
+.fixed-popup { position: fixed; top: 0; left: 0; z-index: 10000; width: 100%; display: none;}
+{% endblock %} 
+{% block content %}
+
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Workers</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{% url 'worker-create' %}">Add New</a>
+        </div>
+    </div>
+
+
+
+    {% if object_list %} 
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>    
+                        {% for worker in object_list %}
+                            <tr data-id="{{job.id}}">
+                                <td><a href="{% url 'capture-details' pk=job.id %}">{{job.name}}</a></td>
+                                <td>{{job.description}}</td>
+                            </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        {% if is_paginated %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                        <a href="{% url 'worker-list' %}?page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+                        <span class="page-current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        <ul>
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.has_next %}
+                                <li><a href="{% url 'worker-list' %}?page={{ i }}">{{i}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                        {% if page_obj.has_next %}
+                        <a href="{% url 'worker-list' %}?page={{ page_obj.next_page_number }}">next</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %} 
+    {% endif %}
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="debug-code-outer-cntr">
+                <button type="button" data-toggle="collapse" data-target="#debug-code-cntr" class="btn btn-danger">Show debug</button>
+                <div id="debug-code-cntr" class="collapse">
+                    <code>{{debug}}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div>
+    {{ form.as_p }}
+</div>
+
+
+
+
+{% endblock %} 
+
+
+
+{% block end_scripts %}
+
+
+{% endblock %}

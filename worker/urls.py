@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.conf import settings
 
-from main.views import *
+from worker.views import *
 
 urlpatterns = patterns('',
 	url(r'^$', WorkerListView.as_view(), name='worker-list'),
