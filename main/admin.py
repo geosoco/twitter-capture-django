@@ -30,9 +30,9 @@ class CreatedByBaseAdmin(admin.ModelAdmin):
 #
 #
 #
-class CaptureJobAdmin(CreatedByBaseAdmin):
+class JobAdmin(CreatedByBaseAdmin):
 	"""
-	CaptureJob Admin
+	Job Admin
 	"""
 
 	list_display = ('name', 'description', 'created_by', 'creation_date', 'twitter_keywords')
@@ -42,9 +42,9 @@ class CaptureJobAdmin(CreatedByBaseAdmin):
 #
 #
 #
-class CaptureJobModificationAdmin(CreatedByBaseAdmin):
+class JobModificationAdmin(CreatedByBaseAdmin):
 	"""
-	CaptureJobModification Admin
+	JobModification Admin
 	"""
 
 	list_display = ('job_name', 'job_description', 'modified_by', 'modification_date' )
@@ -62,7 +62,7 @@ class CaptureJobModificationAdmin(CreatedByBaseAdmin):
 # register admin handlers
 #
 
-admin.site.register(CaptureJob,CaptureJobAdmin)
-admin.site.register(CaptureJobModification,CaptureJobModificationAdmin)
+admin.site.register(Job,JobAdmin)
+admin.site.register(JobModification,JobModificationAdmin)
 
 

@@ -31,6 +31,11 @@
             <h1>Captures</h1>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{% url 'capture-create' %}">Add New</a>
+        </div>
+    </div>
 
 
 
@@ -48,7 +53,7 @@
                     <tbody>    
                         {% for job in object_list %}
                             <tr data-id="{{job.id}}">
-                                <td>{{job.name}}</td>
+                                <td><a href="{% url 'capture-details' pk=job.id %}">{{job.name}}</a></td>
                                 <td>{{job.description}}</td>
                                 <td>
                                     {% if job.status != 1 %}

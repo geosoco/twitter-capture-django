@@ -1,22 +1,21 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound, JsonResponse
-from django.views.decorators.csrf import csrf_protect
 from django.views.generic import View, ListView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
-from django.shortcuts import render, render_to_response, get_object_or_404
 from django import forms
-import json
 
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
-from django.forms.util import ErrorList
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
+from django.contrib.auth.decorators import login_required
+
 from models import *
 
 import logging
+from datetime import datetime
 
 
 # Get an instance of a logger
@@ -26,6 +25,16 @@ logger = logging.getLogger(__name__)
 #
 # Mixins
 #
+
+class LoginRequiredMixin(object):
+    """A mixin that forces a login to view the CBTemplate."""
+    
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
+        return login_required(view)
+
+
 
 class AjaxableResponseMixin(object):
 	"""
@@ -43,8 +52,8 @@ class AjaxableResponseMixin(object):
 		# call form.save() for example).
 		logger.info("form is valid")
 
-		#data = serializers.serialize('json', form)
-		logger.info("form data: %s"%(str(form.fields['text'])))
+		# data = serializers.serialize('json', form)
+		#logger.info("form data: %s"%(str(form.fields['text'])))
 		response = super(AjaxableResponseMixin, self).form_valid(form)
 		data = model_to_dict(self.object)
 		return JsonResponse(data)
@@ -60,14 +69,14 @@ def test(request):
 
 
 
-class CaptureListView(ListView):
+class CaptureListView(LoginRequiredMixin, ListView):
 	"""
 	Listview for Captures
 	"""
-	template_name = "capturejob/capture_list.html"
+	template_name = "capturejob/list.html"
 	context_object_by_name = "capture_list"
 	paginate_by = 10
-	model = CaptureJob
+	model = Job
 
 
 
@@ -91,14 +100,23 @@ class CaptureListView(ListView):
 		return context
 
 
-class CaptureCreate(AjaxableResponseMixin, CreateView):
-	model = CaptureJob
+class CaptureCreate(LoginRequiredMixin, CreateView):
+	model = Job
 	fields = [ 'name', 'description', 'twitter_keywords' ]
-	template = 'capturejob/create.html'
+	template_name = 'capturejob/create.html'
+
+	def form_valid(self, form):
+
+		now = datetime.now()
+		form.instance.created_by = self.request.user
+		form.instance.status = Job.STATUS_CREATED
+
+		return super(CaptureCreate, self).form_valid(form)
 
 
 
-class CaptureDetails(AjaxableResponseMixin, DetailView):
-	model = CaptureJob
-	template = 'capturejob/detail.html'
+class CaptureDetails(LoginRequiredMixin, DetailView):
+	model = Job
+	template_name = 'capturejob/detail.html'
+
 
