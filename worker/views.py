@@ -2,6 +2,7 @@ from worker.models import Worker
 from django.views.generic import View, ListView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
+from base.views import LoginRequiredMixin
 
 
 from django.core import serializers
@@ -9,8 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 
 
-#class WorkerListView(LoginRequiredMixin, ListView):
-class WorkerListView(ListView):
+class WorkerListView(LoginRequiredMixin, ListView):
 	"""
 	Listview for Workers
 	"""
@@ -40,8 +40,7 @@ class WorkerListView(ListView):
 		#context['static_root'] = settings.STATIC_ROOT
 		return context
 
-#class WorkerCreate(LoginRequiredMixin, CreateView):
-class WorkerCreate(CreateView):
+class WorkerCreate(LoginRequiredMixin, CreateView):
 	model = Worker
 	fields = [ 'name', 'description' ]
 	template_name = 'create.html'
@@ -56,8 +55,7 @@ class WorkerCreate(CreateView):
 
 
 
-#class WorkerDetails(LoginRequiredMixin, DetailView):
-class WorkerDetails( DetailView):	
+class WorkerDetails(LoginRequiredMixin, DetailView):
 	model = Worker
 	template_name = 'detail.html'
 
