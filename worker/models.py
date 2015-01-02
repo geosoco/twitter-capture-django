@@ -1,6 +1,6 @@
 from django.db import models
+from base.models import FullAuditModel
 
-# Create your models here.
 
 class Worker(FullAuditModel):
 	"""
