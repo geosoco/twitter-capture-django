@@ -2,7 +2,10 @@ from django.contrib.auth.models import User, Group
 from main.models import Job, JobModification
 from worker.models import Worker
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from api_auth.serializers import UserSerializer, GroupSerializer, JobSerializer, WorkerSerializer
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,6 +29,8 @@ class JobViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = Job.objects.all()
 	serializer_class = JobSerializer
+	authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+	permission_classes = (IsAuthenticated,)
 
 class WorkerViewSet(viewsets.ModelViewSet):
 	"""

@@ -43,6 +43,9 @@ INSTALLED_APPS = (
     'worker',
 
     'rest_framework',
+    'rest_framework.authtoken',
+
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -118,7 +121,12 @@ TEMPLATE_DIRS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 

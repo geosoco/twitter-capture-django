@@ -83,3 +83,13 @@ class CaptureDetails(LoginRequiredMixin, DetailView):
 	template_name = 'capturejob/detail.html'
 
 
+
+def echo(request):
+	ls = []
+	for k,v in request.META.iteritems():
+		s = str(k) + ":" + str(v)
+		ls.append(s)
+		logger.error(s)
+
+	return HttpResponse("<br/>".join(ls))
+
