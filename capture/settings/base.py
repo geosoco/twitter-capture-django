@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'base',
     'main',
     'worker',
+
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,6 +110,17 @@ TEMPLATE_DIRS = [
     os.path.join(BASE_DIR, "capture", "templates"), 
     os.path.join(BASE_DIR, "main", "templates")
 ]
+
+
+#
+# rest framework
+#
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
+}
+
 
 
 

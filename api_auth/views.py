@@ -1,0 +1,35 @@
+from django.contrib.auth.models import User, Group
+from main.models import Job, JobModification
+from worker.models import Worker
+from rest_framework import viewsets
+from api_auth.serializers import UserSerializer, GroupSerializer, JobSerializer, WorkerSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+class JobViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows Jobs to be viewed or edited.
+	"""
+	queryset = Job.objects.all()
+	serializer_class = JobSerializer
+
+class WorkerViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows Worker to be viewed or edited.
+	"""
+	queryset = Worker.objects.all()
+	serializer_class = WorkerSerializer	
