@@ -36,34 +36,24 @@ class CaptureListView(LoginRequiredMixin, ListView):
 	"""
 	Listview for Captures
 	"""
+
 	template_name = "capturejob/list.html"
 	context_object_by_name = "capture_list"
 	paginate_by = 10
 	model = Job
 
-
-
-	#def get_queryset(self):
-		#job_id = self.kwargs['job_id']
-		#self.job = get_object_or_404(CaptureJob, pk=job_id)
-		#return Clip.objects.filter(pk=self.job_id).order_by('offset').prefetch_related('transcription_set')
-
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
 		context = super(CaptureListView, self).get_context_data(**kwargs)
-		# Add in a QuerySet of all the books
-		#context['project'] = self.recording.project
-		#context['recording'] = self.recording
 		context['debug'] = serializers.serialize('json', self.get_queryset())
-		#context['form'] = TranscriptionForm(initial={'user': self.request.user})
-		#context['user_id'] = self.request.user.id
-		#context['project_dir'] = settings.PROJECT_DIR
-		#context['project_root'] = settings.PROJECT_ROOT
-		#context['static_root'] = settings.STATIC_ROOT
 		return context
 
 
 class CaptureCreate(LoginRequiredMixin, CreateView):
+	"""
+	CreateView for Captures
+	"""
+
 	model = Job
 	fields = [ 'name', 'description', 'twitter_keywords' ]
 	template_name = 'capturejob/create.html'
@@ -79,11 +69,17 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 
 
 class CaptureDetails(LoginRequiredMixin, DetailView):
+	"""
+	DetailView for Captures
+	"""
+
 	model = Job
 	template_name = 'capturejob/detail.html'
 
 
 
+
+# debug function to dump some header info
 def echo(request):
 	ls = []
 	for k,v in request.META.iteritems():
