@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound, JsonResponse
 from django.views.generic import View, ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django import forms
 
