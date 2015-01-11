@@ -62,6 +62,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Status</th>
@@ -70,9 +71,6 @@
                     <tbody>    
                         {% for job in object_list %}
                             <tr data-id="{{job.id}}">
-                                <td><a href="{% url 'capture-update' pk=job.id %}">{{job.name}}</a></td>
-                                <td>{{job.description}}</td>
-                                <td>{{job.status}}</td>
                                 <td>
                                     <span class="play-stop-cntr" data-id="{{job.id}}" data-status="{{job.status}}">
                                         {% if job.status == 0 or job.status == 1 or job.status == 5 %}
@@ -89,7 +87,10 @@
                                             </button>
                                         {% endif %}
                                     </span>
-                                </td>
+                                </td>                            
+                                <td><a href="{% url 'capture-update' pk=job.id %}">{{job.name}}</a></td>
+                                <td>{{job.description}}</td>
+                                <td>{{job.status}}</td>
                             </tr>
                         {% endfor %} 
                     </tbody>
