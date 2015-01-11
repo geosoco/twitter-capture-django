@@ -77,6 +77,21 @@ class CaptureDetails(LoginRequiredMixin, DetailView):
 	template_name = 'capturejob/detail.html'
 
 
+class CaptureUpdate(LoginRequiredMixin, UpdateView):
+	"""
+	UpdateView for Captures
+	"""
+
+	model = Job
+	fields = [ 'name', 'description', 'twitter_keywords' ]
+	template_name = 'capturejob/create.html'
+
+	def form_valid(self, form):
+		now = datetime.now()
+		form.instance.modified_by = self.request.user
+
+		return super(CaptureUpdate, self).form_valid(form)
+
 
 
 # debug function to dump some header info
