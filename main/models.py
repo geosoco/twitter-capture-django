@@ -78,7 +78,7 @@ class Update(models.Model):
 
 	count = models.IntegerField()
 	total_count = models.IntegerField()
-	rate = models.DecimalField()
+	rate = models.DecimalField(max_digits=8, decimal_places=3)
 
 
 
