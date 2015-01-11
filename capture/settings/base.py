@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'main',
     'worker',
 
+    'widget_tweaks',
+
     'rest_framework',
     'rest_framework.authtoken',
 
