@@ -90,7 +90,7 @@
                                 </td>                            
                                 <td><a href="{% url 'capture-update' pk=job.id %}">{{job.name}}</a></td>
                                 <td>{{job.description}}</td>
-                                <td>{{job.status}}</td>
+                                <td>{{job.get_status_display}}</td>
                             </tr>
                         {% endfor %} 
                     </tbody>
