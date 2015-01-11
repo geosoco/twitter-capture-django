@@ -27,8 +27,7 @@ class Job(FullAuditModel):
 	STATUS_STARTED = 3
 	STATUS_STOPPING = 4
 	STATUS_STOPPED = 5
-	STATUS_UNRESPONSIVE = 6
-	STATUS_DEAD = 7
+
 
 	STATUS_CHOICES = (
 		(STATUS_UNKNOWN, 'unknown'),
@@ -37,8 +36,6 @@ class Job(FullAuditModel):
 		(STATUS_STARTED, 'started'),
 		(STATUS_STOPPING, 'stopping'),
 		(STATUS_STOPPED, 'stopped'),
-		(STATUS_UNRESPONSIVE, 'unresponsive'),
-		(STATUS_DEAD, 'dead'),
 	)
 
 
@@ -81,6 +78,7 @@ class Update(models.Model):
 
 	count = models.IntegerField()
 	total_count = models.IntegerField()
+	rate = models.DecimalField()
 
 
 

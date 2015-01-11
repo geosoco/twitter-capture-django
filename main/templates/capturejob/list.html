@@ -5,11 +5,28 @@
 {% block page_style %} 
 .audio-clip-cntr { } 
 .audio-clip { width: 400px; height: 150px; background-color: #eee; display: block; } 
-.hidden { display: none } 
+.hidden { display: none; } 
 
 .trans-text textarea { width: 100%; }
 .trans-text { margin-bottom: 10px; }
 .fixed-popup { position: fixed; top: 0; left: 0; z-index: 10000; width: 100%; display: none;}
+
+.glyphicon.spin-animation {
+    -webkit-animation: refresh-spin 2s infinite linear;
+    animation: refresh-spin 2s infinite linear;
+}
+
+@-webkit-keyframes refresh-spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+    
+}
+
+@keyframes refresh-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 {% endblock %} 
 {% block content %}
 <div class="fixed-popup">
@@ -55,16 +72,23 @@
                             <tr data-id="{{job.id}}">
                                 <td><a href="{% url 'capture-details' pk=job.id %}">{{job.name}}</a></td>
                                 <td>{{job.description}}</td>
+                                <td>{{job.status}}</td>
                                 <td>
-                                    {% if job.status != 1 %}
-                                    <button type="button" class="btn btn-primary play-stop ">
-                                        <span class="glyphicon glyphicon-play"></span>
-                                    </button>
-                                    {% else %}
-                                    <button type="button" class="btn btn-danger play-stop ">
-                                        <span class="glyphicon glyphicon-stop"></span>
-                                    </button>
-                                    {% endif %}
+                                    <span class="play-stop-cntr" data-id="{{job.id}}" data-status="{{job.status}}">
+                                        {% if job.status == 0 or job.status == 1 or job.status == 5 %}
+                                            <button type="button" class="btn btn-primary play-stop">
+                                                <span class="glyphicon glyphicon-play"></span>
+                                            </button>
+                                        {% elif job.status == 2 or job.status == 4 %}
+                                            <button type="button" class="btn play-stop" disabled>
+                                                <span class="glyphicon glyphicon-refresh spin-animation"></span>
+                                            </button>
+                                        {% elif job.status == 3 %}
+                                            <button type="button" class="btn btn-danger play-stop">
+                                                <span class="glyphicon glyphicon-stop"></span>
+                                            </button>
+                                        {% endif %}
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %} 
@@ -165,6 +189,8 @@ function getOrDefault($el, name, defaultValue) {
 }
 
 
+//function togglePlayStop
+
 $(function() {
 
 
@@ -180,6 +206,123 @@ $(function() {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         }
+    });
+
+
+    function putJob(id, obj) {
+        $.ajax("/api/jobs/" + id + "/", {
+            type: "put",
+            data: obj
+        })
+        .done(function(d){
+            console.log("putJob -- successful");
+            console.dir(d);
+        })
+        .fail(function(d){
+            console.log("putJob -- failed");
+            console.dir(d);
+        });
+    }
+
+    function changeStatus(id, old_status, new_status ) {
+        $.get("/api/jobs/" + id + "/")
+            .done(function(d){
+                if(d.status == old_status) {
+                    console.log("changing status from old_status to new_status");
+                    d.status = new_status;
+                    // update the new status on server
+                    putJob(id, d);
+                } else {
+                    console.error("status has changed on the server... currently: " + d.status + " was expected to be: " + old_status );
+                }
+            })
+            .fail(function(d){
+                console.error("failed to get job status");
+            });
+    }
+
+
+    $("button.play-stop").click(function(d){
+        var parent = $(this).parent(".play-stop-cntr"),
+            id = +parent.data("id"),
+            status = +parent.data("status"),
+            playBtn = true,
+            working = false,
+            btn = $(this),
+            new_status = status;
+
+
+/*
+    STATUS_UNKNOWN = 0
+    STATUS_CREATED = 1
+    STATUS_STARTING = 2
+    STATUS_STARTED = 3
+    STATUS_STOPPING = 4
+    STATUS_STOPPED = 5
+*/
+
+        // split apart out button types
+        switch(status) {
+            /* STATUS_UNKNOWN, STATUS_CREATED, STATUS_STOPPED */
+            case 0:
+            case 1: 
+            case 5:
+                playBtn = false;
+                working = true;
+                new_status = 2;
+                break;
+
+            /* STATUS_STARTING */
+            case 2: 
+                playBtn = true;
+                working = false;
+                break;
+
+            /* STATUS_STARTED */
+            case 3:
+                playBtn = false;
+                working = true;
+                new_status = 4;
+                break;
+
+            /* STATUS_STOPPING */
+            case 4:
+                playBtn = false;
+                working = true;
+                break;
+
+            default:
+                console.error("unknown status: " + status);
+                break;
+        }
+
+
+        if(status != new_status) {
+
+            parent.data('status', new_status);
+
+            // update the status
+            changeStatus(id, status, new_status);
+
+
+            // now update the button
+            if(working) {
+                btn.attr("disabled", "disabled");
+                btn.removeClass("btn-danger btn-primary");
+                btn.find("span").removeClass("glyphicon-stop glyphicon-play").addClass("glyphicon-refresh spin-animation");
+            } else {
+                btn.removeAttr("disabled");
+                if(playBtn) {
+                    btn.addClass("btn-primary").removeClass("btn-danger");
+                    btn.find("span").removeClass("glyphicon-stop glyphicon-refresh spin-animation").addClass("glypicon-start");
+                } else {
+                    btn.addClass("btn-danger").removeClass("btn-primary");
+                    btn.find("span").removeClass("glyphicon-start glyphicon-refresh spin-animation").addClass("glypicon-stop");
+                }
+            }
+        }
+
+
     });
 });
 </script>

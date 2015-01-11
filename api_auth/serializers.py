@@ -15,9 +15,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):
+	status = serializers.ChoiceField(choices=Job.STATUS_CHOICES)
+
 	class Meta:
 		model = Job
 		fields = ('url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker')
+		
 
 class WorkerSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
