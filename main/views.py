@@ -53,7 +53,7 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 	"""
 
 	model = Job
-	fields = [ 'name', 'description', 'twitter_keywords' ]
+	fields = [ 'name', 'description', 'twitter_keywords', 'assigned_worker' ]
 	template_name = 'capturejob/create.html'
 
 	def form_valid(self, form):
@@ -133,6 +133,18 @@ class ClientDetail(LoginRequiredMixin, DetailView):
 		return context	
 
 
+class ClientListView(LoginRequiredMixin, ListView):
+	"""
+	"""
+
+	template_name = "client/list.html"
+	paginate_by = 10
+	model = User
+
+
+	def get_queryset(self):
+		queryset = User.objects.filter(groups__name='capture_client')
+		return queryset
 
 
 

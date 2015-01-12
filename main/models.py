@@ -51,7 +51,7 @@ class Job(FullAuditModel):
 	started = models.DateTimeField(null=True, blank=True)
 	stopped = models.DateTimeField(null=True, blank=True)
 
-	assigned_worker = models.ForeignKey(Worker, null=True, blank=True, default=None)
+	assigned_worker = models.ForeignKey(User, null=True, blank=True, default=None)
 
 	def get_absolute_url(self):
 		return reverse('capture-details', kwargs={ 'pk': self.pk, })

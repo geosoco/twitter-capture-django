@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+
+{% block content %}
+<div class="container-fluid">
+	<!-- header -->
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Captures</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{% url 'client-create' %}">Add New</a>
+        </div>
+    </div>
+
+
+    {% if object_list %}
+    	<div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Name</th>
+                            <th>Task</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>    
+                        {% for obj in object_list %}
+                            <tr data-id="{{obj.id}}">
+                                <td>{{obj.id}}</td>
+                                <td><a href="{% url 'client-detail' pk=obj.id %}">{{obj.username}}</a></td>                     
+                                <td></td>
+                                <td>{{obj.worker.connection_status}}</td>
+                            </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        {% if is_paginated %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                        <a href="/clips/{{recording.id}}/?page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+                        <span class="page-current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        <ul>
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.has_next %}
+                                <li><a href="/clips/{{recording.id}}/?page={{ i }}">{{i}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                        {% if page_obj.has_next %}
+                        <a href="/clips/{{recording.id}}/?page={{ page_obj.next_page_number }}">next</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %} 
+
+    {% else %}
+    	<p>No Clients Found</p>
+    {% endif %}
+</div>
+
+{% endblock %} 
+
+
+
+{% block end_scripts %}{% endblock %}
+
