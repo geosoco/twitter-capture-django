@@ -75,10 +75,11 @@ class Update(models.Model):
 
 	date = models.DateTimeField(auto_now_add=True)
 
-	count = models.IntegerField()
-	total_count = models.IntegerField()
-	rate = models.DecimalField(max_digits=8, decimal_places=3)
+	count = models.IntegerField(null=True, blank=True)
+	total_count = models.IntegerField(null=True, blank=True)
+	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
 
+	#job = models.ForeignKey(Job)
 
 
 

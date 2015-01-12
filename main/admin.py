@@ -39,6 +39,16 @@ class JobModificationAdmin(CreatedByBaseAdmin):
 		return obj.job.description
 
 
+
+class UpdateAdmin(admin.ModelAdmin):
+	"""
+	Update Admin model
+	"""
+
+	list_display = ('id', 'date', 'count', 'total_count', 'rate')
+	readonly_fields = ('id', 'date', 'count', 'total_count', 'rate')
+
+
 #
 # register admin handlers
 #

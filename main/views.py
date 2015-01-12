@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from rest_framework.authtoken.models import Token
+import simplejson as json
 
 
 from models import *
@@ -87,6 +88,37 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 	def form_valid(self, form):
 		now = datetime.now()
 		form.instance.modified_by = self.request.user
+		form.instance.modified_date = now
+
+		old = Job.objects.get(pk=self.object.pk)
+
+		logger.warn("doing modification")
+		logger.warn("name: %s -> %s"%(old.name , form.instance.name))
+		logger.warn("description: %s -> %s"%(old.description , form.instance.description))
+		logger.warn("keywords: %s -> %s"%(self.object.twitter_keywords , form.instance.twitter_keywords))
+
+		# create modification dictionary
+		diff = {}
+		if form.instance.name != old.name:
+			diff['name'] = form.instance.name
+
+		if form.instance.description != old.description:
+			diff['description'] = form.instance.description
+
+		if form.instance.twitter_keywords != old.twitter_keywords:
+			diff['twitter_keywords'] = form.instance.twitter_keywords
+
+		# serialize the text
+		diff_text = json.dumps(diff)
+
+		modification = JobModification(
+				changes = diff_text,
+				job = self.object,
+				modified_by = self.request.user,
+				modified_date = now
+			)
+
+		modification.save()
 
 		return super(CaptureUpdate, self).form_valid(form)
 
