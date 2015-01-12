@@ -2,7 +2,6 @@ import os
 import logging
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.text import slugify
 from django.core.urlresolvers import reverse
 
 from base.models import FullAuditModel, ModifiedByMixin

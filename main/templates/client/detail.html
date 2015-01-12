@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load staticfiles %} 
+
+
+{% block content %}
+
+<div class="content">
+	<h1>Client Details</h1>
+    <p>{{object.username}}</p>
+    <p>Groups: </p>
+    <ul>
+    	{% for group in object.groups_set.all %}
+    	<li>{{group.name}}</li>
+    	{% endfor %}
+
+    	{% for group in object.groups.all %}
+    	<li>{{group.name}}</li>
+    	{% endfor %}
+
+    </ul>
+</div>
+
+
+{% endblock %} 
+
+
+{% block end_scripts %}
+{% endblock %}

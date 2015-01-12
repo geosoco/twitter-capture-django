@@ -1,14 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound, JsonResponse
 from django.views.generic import View, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from django import forms
 
 from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
+from rest_framework.authtoken.models import Token
 
 
 from models import *
@@ -91,6 +89,51 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 		form.instance.modified_by = self.request.user
 
 		return super(CaptureUpdate, self).form_valid(form)
+
+
+
+class ClientCreate(LoginRequiredMixin, CreateView):
+	"""
+	Create view for making clients. Also creates 
+	"""
+
+	model = User
+	fields = [ 'username', 'password']
+	template_name = 'client/create.html'
+
+	def get_success_url(self):
+		return reverse('client-detail', args=(self.object.id,))
+
+	def form_valid(self, form):
+		response = super(ClientCreate, self).form_valid(form)
+
+		# add the user to the capture_client group
+		g = Group.objects.get(name='capture_client') 
+		self.object.groups.add(g)
+
+		# create auth token for the user
+		Token.objects.get_or_create(user=self.object)
+		return response
+
+
+class ClientDetail(LoginRequiredMixin, DetailView):
+	"""
+	"""
+
+	model = User
+	fields = ['username', 'password']
+	template_name = 'client/detail.html'
+
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(ClientDetail, self).get_context_data(**kwargs)
+		context['debug'] = serializers.serialize('json', self.get_queryset())
+
+		return context	
+
+
+
 
 
 
