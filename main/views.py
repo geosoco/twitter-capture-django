@@ -6,6 +6,7 @@ from django.core import serializers
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
+from django.contrib.auth.hashers import make_password
 from rest_framework.authtoken.models import Token
 import simplejson as json
 
@@ -59,8 +60,9 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 
 	def get_form(self, form_class):
 		form = super(CreateView, self).get_form(form_class)
-		form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client')
-
+		# make it required but only list ones that have items that have no created or running workers
+		form.fields['assigned_worker'].required = True
+		form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client').exclude(job__status__lt=5)
 		return form
 
 
@@ -144,6 +146,8 @@ class ClientCreate(LoginRequiredMixin, CreateView):
 		return reverse('client-detail', args=(self.object.id,))
 
 	def form_valid(self, form):
+		form.instance.password = make_password(form.instance.password)
+
 		response = super(ClientCreate, self).form_valid(form)
 
 		# add the user to the capture_client group
