@@ -57,6 +57,13 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 	fields = [ 'name', 'description', 'twitter_keywords', 'assigned_worker' ]
 	template_name = 'capturejob/create.html'
 
+	def get_form(self, form_class):
+		form = super(CreateView, self).get_form(form_class)
+		form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client')
+
+		return form
+
+
 	def form_valid(self, form):
 
 		now = datetime.now()
