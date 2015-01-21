@@ -91,8 +91,15 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 	"""
 
 	model = Job
-	fields = [ 'name', 'description', 'twitter_keywords' ]
+	fields = [ 'name', 'description', 'twitter_keywords', 'assigned_worker' ]
 	template_name = 'capturejob/create.html'
+
+	def get_form(self, form_class):
+		form = super(UpdateView, self).get_form(form_class)
+		# make it required but only list ones that have items that have no created or running workers
+		#form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client').exclude(job__status__lt=5)
+		form.fields['assigned_worker'].widget.attrs['disabled'] = True
+		return form
 
 	def form_valid(self, form):
 		now = datetime.now()
