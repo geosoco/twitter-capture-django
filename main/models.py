@@ -3,6 +3,7 @@ import logging
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.validators import RegexValidator
 
 from base.models import FullAuditModel, ModifiedByMixin
 from worker.models import Worker
@@ -37,8 +38,11 @@ class Job(FullAuditModel):
 		(STATUS_STOPPED, 'stopped'),
 	)
 
+	alphanumeric_start = RegexValidator(regex='^[0-9a-zA-Z_\-\ ]+', message='Must start with an alphanumeric character', code='alpha_start')
+	alphanumeric = RegexValidator(r'^[0-9a-zA-Z_\-\ ]*$', 'Only alphanumeric characters, spaces, and _ and - are allowed.')
 
-	name = models.CharField(max_length=256)
+
+	name = models.CharField(max_length=64, blank=False, null=False, validators=[alphanumeric,alphanumeric_start], unique=True)
 	description = models.TextField()
 
 	twitter_keywords = models.TextField()
@@ -72,14 +76,14 @@ class Update(models.Model):
 	"""
 		Model for capture update / update 
 	"""
-
+	job = models.ForeignKey(Job)
 	date = models.DateTimeField(auto_now_add=True)
 
 	count = models.IntegerField(null=True, blank=True)
 	total_count = models.IntegerField(null=True, blank=True)
 	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
 
-	#job = models.ForeignKey(Job)
+
 
 
 

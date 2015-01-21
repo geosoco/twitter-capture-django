@@ -25,7 +25,7 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
 class UpdateSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Update
-		fields = ('date', 'count', 'total_count', 'rate')
+		fields = ('date', 'count', 'total_count', 'rate', 'job')
 		
 
 class WorkerSerializer(serializers.HyperlinkedModelSerializer):

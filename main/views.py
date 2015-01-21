@@ -92,10 +92,10 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 
 		old = Job.objects.get(pk=self.object.pk)
 
-		logger.warn("doing modification")
-		logger.warn("name: %s -> %s"%(old.name , form.instance.name))
-		logger.warn("description: %s -> %s"%(old.description , form.instance.description))
-		logger.warn("keywords: %s -> %s"%(self.object.twitter_keywords , form.instance.twitter_keywords))
+		logger.debug("doing modification")
+		logger.debug("name: %s -> %s"%(old.name , form.instance.name))
+		logger.debug("description: %s -> %s"%(old.description , form.instance.description))
+		logger.debug("keywords: %s -> %s"%(self.object.twitter_keywords , form.instance.twitter_keywords))
 
 		# create modification dictionary
 		diff = {}
