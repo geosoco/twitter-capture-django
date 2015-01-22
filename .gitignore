@@ -4,3 +4,12 @@ capture/settings/local.py
 debug.log
 debug2.log
 static
+/logs/
+/env/
+.viminfo
+capture/uwsgi.ini
+capture/wsgi_params
+.bash_history
+.pip
+.ssh/
+capture/boston_wsgi.py
