@@ -3,7 +3,6 @@ capture/settings/local.py
 *.pyc
 debug.log
 debug2.log
-static
 /logs/
 /env/
 .viminfo
@@ -13,3 +12,5 @@ capture/wsgi_params
 .pip
 .ssh/
 capture/boston_wsgi.py
+/static
+.gitconfig
