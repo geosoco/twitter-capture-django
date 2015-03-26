@@ -46,4 +46,6 @@ class WorkerViewSet(viewsets.ModelViewSet):
 	API endpoint that allows Worker to be viewed or edited.
 	"""
 	queryset = Worker.objects.all()
-	serializer_class = WorkerSerializer	
+	serializer_class = WorkerSerializer
+	authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+	permission_classes = (IsAuthenticated,)

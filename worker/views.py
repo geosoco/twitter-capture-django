@@ -42,7 +42,7 @@ class WorkerListView(LoginRequiredMixin, ListView):
 
 class WorkerCreate(LoginRequiredMixin, CreateView):
 	model = Worker
-	fields = [ 'name', 'description' ]
+	fields = [ 'user__name', 'description' ]
 	template_name = 'create.html'
 
 	def form_valid(self, form):
