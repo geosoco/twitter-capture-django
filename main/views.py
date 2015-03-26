@@ -45,7 +45,8 @@ class CaptureListView(LoginRequiredMixin, ListView):
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
 		context = super(CaptureListView, self).get_context_data(**kwargs)
-		context['debug'] = serializers.serialize('json', self.get_queryset())
+		#context['debug'] = serializers.serialize('json', context['job_list'])
+		#print repr([serializers.serialize('json', j) for j in context['job_list'] ])
 		return context
 
 
