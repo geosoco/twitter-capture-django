@@ -6,7 +6,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups')
+        fields = ('username', 'email')
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -14,12 +14,25 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ('url', 'name')
 
+class UpdateSimpleSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Update
+		fields = ('date', 'total_count', 'rate')
+
 class JobSerializer(serializers.ModelSerializer):
 	status = serializers.ChoiceField(choices=Job.STATUS_CHOICES)
+	#updates = serializers.SerializerMethodField()
+
+	#def get_updates(self, job):
+	#	updates_queryset = 	Update.objects.order_by('-date')[:20]
+	#	serializer = UpdateSimpleSerializer(instance=updates_queryset, many=True, context=self.context)
+	#	return serializer.data
 
 	class Meta:
 		model = Job
-		fields = ('url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker')
+		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'archived_date', 'total_count', 'rate', 'ping_date')
+		partial = True
+		#read_only_fields = ('updates',)
 
 
 class UpdateSerializer(serializers.ModelSerializer):
@@ -29,8 +42,11 @@ class UpdateSerializer(serializers.ModelSerializer):
 		
 
 class WorkerSerializer(serializers.ModelSerializer):
+	user = UserSerializer(read_only=True)
+
+
 	class Meta:
 		model = Worker
-		fields = ('url', 'name', 'description')
+		fields = ('url', 'user', 'description')
 
 

@@ -7,8 +7,8 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'jobs', views.JobViewSet)
+router.register(r'activejobs', views.ActiveJobViewSet, base_name='activejobs')
 router.register(r'update', views.UpdateViewSet)
-router.register(r'workers', views.WorkerViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

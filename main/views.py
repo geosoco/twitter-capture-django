@@ -40,12 +40,12 @@ class CaptureListView(LoginRequiredMixin, ListView):
 	template_name = "capturejob/list.html"
 	context_object_by_name = "capture_list"
 	paginate_by = 10
-	model = Job
+	querset = queryset = Job.objects.exclude(archived_date__isnull=False)
 
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
 		context = super(CaptureListView, self).get_context_data(**kwargs)
-		#context['debug'] = serializers.serialize('json', context['job_list'])
+		context['debug'] = serializers.serialize('json', context['object_list'])
 		#print repr([serializers.serialize('json', j) for j in context['job_list'] ])
 		return context
 
@@ -116,13 +116,29 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 		# create modification dictionary
 		diff = {}
 		if form.instance.name != old.name:
-			diff['name'] = form.instance.name
+			nd = {}
+			nd['old'] = old.name
+			nd['new'] = form.instance.name
+			diff['name'] = nd
 
 		if form.instance.description != old.description:
-			diff['description'] = form.instance.description
+			desc = {}
+			desc['old'] = old.description
+			desc['new'] = form.instance.description
+			diff['description'] = desc
 
 		if form.instance.twitter_keywords != old.twitter_keywords:
-			diff['twitter_keywords'] = form.instance.twitter_keywords
+			tk = {}
+			tk['old'] = old.twitter_keywords
+			tk['new'] = form.instance.twitter_keywords
+			old_keywords = set([w.strip() for w in old.twitter_keywords.split(',')])
+			new_keywords = set([w.strip() for w in form.instance.twitter_keywords.split(',')])
+			additions = new_keywords - old_keywords
+			deletions = old_keywords - new_keywords
+			tk['additions'] = list(additions)
+			tk['deletions'] = list(deletions)
+			# set keywords dict
+			diff['twitter_keywords'] = tk
 
 		# serialize the text
 		diff_text = json.dumps(diff)

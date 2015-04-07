@@ -4,9 +4,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from base.models import FullAuditModel, ModifiedByMixin
 from worker.models import Worker
+from datetime import datetime
 
 
 # Get an instance of a logger
@@ -55,10 +58,38 @@ class Job(FullAuditModel):
 	started = models.DateTimeField(null=True, blank=True)
 	stopped = models.DateTimeField(null=True, blank=True)
 
+	archived_date = models.DateTimeField(null=True, blank=True)
+	total_count = models.IntegerField(null=True, blank=True)
+	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
+	ping_date = models.DateTimeField(null=True, blank=True)
+
 	assigned_worker = models.ForeignKey(User, null=True, blank=True, default=None)
 
 	def get_absolute_url(self):
 		return reverse('capture-details', kwargs={ 'pk': self.pk, })
+
+
+
+@receiver(pre_save, sender=Job)
+def on_job_pre_save(sender, instance, *args, **kwargs):	
+	if instance.id:
+		old_job = Job.objects.get(pk=instance.id)
+
+		# if we're archiving it, stop it
+		if instance.archived_date is not None and old_job.archived_date is None:
+			instance.status = Job.STATUS_STOPPED
+
+		# has the status changed?
+		if old_job.status != instance.status:
+			# if status is changing
+			if instance.status == Job.STATUS_STARTED:
+				# first started
+				if instance.first_started == None:
+					instance.first_started = datetime.now()
+				# now any start value
+				instance.started = datetime.now()
+			elif instance.status == Job.STATUS_STOPPED:
+				instance.stopped = datetime.now()
 
 
 
@@ -82,6 +113,18 @@ class Update(models.Model):
 	count = models.IntegerField(null=True, blank=True)
 	total_count = models.IntegerField(null=True, blank=True)
 	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
+
+
+class LogMessage(models.Model):
+	"""
+		Model for log messages from client
+	"""
+	job = models.ForeignKey(Job)
+	date = models.DateTimeField(auto_now_add=True)
+
+	source = models.CharField(max_length=32, blank=True, null=True)
+	kind = models.CharField(max_length=4, blank=True, null=True)
+	message = models.TextField()
 
 
 

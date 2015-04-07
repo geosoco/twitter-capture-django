@@ -61,14 +61,18 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th></th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Status</th>
+                            <th>Total Tweets</th>
+                            <th>Rate</th>
                         </tr>
                     </thead>
                     <tbody>    
                         {% for job in object_list %}
                             <tr data-id="{{job.id}}">
+                                <td><input type="checkbox" class="row-check"></td>
                                 <td>
                                     <span class="play-stop-cntr" data-id="{{job.id}}" data-status="{{job.status}}">
                                         {% if job.status == 0 or job.status == 1 or job.status == 5 %}
@@ -89,6 +93,8 @@
                                 <td><a href="{% url 'capture-update' pk=job.id %}">{{job.name}}</a></td>
                                 <td>{{job.description}}</td>
                                 <td>{{job.get_status_display}}</td>
+                                <td>{{job.total_count}}</td>
+                                <td>{{job.rate}}</td>
                             </tr>
                         {% endfor %} 
                     </tbody>
@@ -131,6 +137,13 @@
 
     <div class="row">
         <div class="col-md-12">
+            <button disabled="true" class="btn btn-default" id="archive-btn">Archive</button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 100px">
+        <div class="col-md-12">
             <div class="debug-code-outer-cntr">
                 <button type="button" data-toggle="collapse" data-target="#debug-code-cntr" class="btn btn-danger">Show debug</button>
                 <div id="debug-code-cntr" class="collapse">
@@ -155,7 +168,11 @@
 
 
 {% block end_scripts %}
-
+    <!--
+    <script src="{% static "js/controllers.js" %}"></script>
+    <script src="{% static "js/services.js" %}"></script>
+    <script src="{% static "js/main.js" %}"></script>
+    -->
 
 <script>
 
@@ -217,7 +234,7 @@ $(function() {
             console.dir(d);
         })
         .fail(function(d){
-            console.log("putJob -- failed");
+            console.error("putJob -- failed");
             console.dir(d);
         });
     }
@@ -239,7 +256,7 @@ $(function() {
             });
     }
 
-
+    // play/stop handlers
     $("button.play-stop").click(function(d){
         var parent = $(this).parent(".play-stop-cntr"),
             id = +parent.data("id"),
@@ -322,6 +339,50 @@ $(function() {
 
 
     });
+
+
+    function updateArchiveButton() {
+        var num_checked = $(".row-check:checked").length;
+        if(num_checked > 0) {
+            $("#archive-btn").removeAttr("disabled");
+        } else {
+            $("#archive-btn").attr('disabled', "true" );
+        }
+    }
+
+    // row checkboxes ui
+    $(".row-check").click(function(d){
+        // update archive button
+        updateArchiveButton();
+
+    });
+
+
+    // archive button
+    $("#archive-btn").click(function() {
+
+        $(".row-check:checked").each(function(i,e) {
+            var parent = $(e).parents("tr"),
+                id = +parent.data("id"),
+                num_checked = $(".row-check:checked").length;
+
+            $.get("/api/jobs/" + id + "/")
+                .done(function(d){
+                    console.log("changing status from old_status to stopped and adding archive date");
+                    d.status = 4; // set it to stopping
+                    d.archived_date = (new Date(Date.now())).toISOString();
+                    // update the new status on server
+                    putJob(id, d);
+                })
+                .fail(function(d){
+                    console.error("failed to get job status");
+                });
+
+
+        })
+
+        updateArchiveButton();
+    })
 });
 </script>
 {% endblock %}
