@@ -113,6 +113,9 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 		logger.debug("description: %s -> %s"%(old.description , form.instance.description))
 		logger.debug("keywords: %s -> %s"%(self.object.twitter_keywords , form.instance.twitter_keywords))
 
+		# copy over the assigned worker
+		form.instance.assigned_worker = old.assigned_worker
+
 		# create modification dictionary
 		diff = {}
 		if form.instance.name != old.name:
