@@ -13,7 +13,7 @@ def append_path(path):
 	if path not in sys.path:
 		sys.path.insert(0, path)
 
-append_path('/Users/soco/dev/projects/capture')
+append_path('/Users/soco/dev/projects/twitter-capture-django')
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "capture.settings.local")

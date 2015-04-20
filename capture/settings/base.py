@@ -96,9 +96,9 @@ STATICFILES_DIRS = (
 #
 #
 
-FIXTURE_DIRS = (
-    os.path.join(BASE_DIR, "main", "fixtures")
-)
+#FIXTURE_DIRS = (
+#    os.path.join(BASE_DIR, "main", "fixtures")
+#)
 
 
 #
@@ -106,8 +106,8 @@ FIXTURE_DIRS = (
 #
 
 TEMPLATE_DIRS = [
-    os.path.join(BASE_DIR, "capture", "templates"), 
-    os.path.join(BASE_DIR, "main", "templates")
+    os.path.join(ROOT_DIR, "capture", "templates"), 
+    os.path.join(ROOT_DIR, "main", "templates")
 ]
 
 
