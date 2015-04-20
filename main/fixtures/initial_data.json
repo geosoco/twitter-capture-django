@@ -1,0 +1,45 @@
+[
+{
+    "fields": {
+        "name": "capture_client",
+        "permissions": [
+            20,
+            22,
+            25,
+            26,
+            28,
+            29
+        ]
+    },
+    "model": "auth.group",
+    "pk": 1
+},
+{
+    "fields": {
+        "username": "testclient_1",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "last_login": "2015-01-27T20:18:55Z",
+        "groups": [
+            1
+        ],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$15000$4RQ66MIPuYeZ$hr2v79BPjwHN8LU/KyHSfLYedycZFDTzBg77gUsJrmI=",
+        "email": "",
+        "date_joined": "2015-01-27T20:18:55Z"
+    },
+    "model": "auth.user",
+    "pk": 3
+},
+{
+    "fields": {
+        "user": 3,
+        "created": "2015-01-27T20:18:55Z"
+    },
+    "model": "authtoken.token",
+    "pk": "e222bfc940574355785782891a17ef5fe245738c"
+},
+]
