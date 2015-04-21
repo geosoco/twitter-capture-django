@@ -49,6 +49,22 @@ class CaptureListView(LoginRequiredMixin, ListView):
 		#print repr([serializers.serialize('json', j) for j in context['job_list'] ])
 		return context
 
+class ArchiveListView(LoginRequiredMixin, ListView):
+	"""
+	Listview for Captures
+	"""
+
+	template_name = "capturejob/list.html"
+	context_object_by_name = "capture_list"
+	paginate_by = 10
+	querset = queryset = Job.objects.exclude(archived_date__isnull=True)
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(ArchiveListView, self).get_context_data(**kwargs)
+
+		return context
+
 
 class CaptureCreate(LoginRequiredMixin, CreateView):
 	"""
@@ -63,7 +79,7 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 		form = super(CreateView, self).get_form(form_class)
 		# make it required but only list ones that have items that have no created or running workers
 		form.fields['assigned_worker'].required = True
-		form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client').exclude(job__status__lt=5)
+		form.fields['assigned_worker'].queryset = User.objects.filter(groups__name='capture_client').exclude(job__archived_date__isnull=True)
 		return form
 
 

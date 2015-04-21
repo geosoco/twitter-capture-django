@@ -45,10 +45,13 @@ class Job(FullAuditModel):
 	alphanumeric = RegexValidator(r'^[0-9a-zA-Z_\-\ ]*$', 'Only alphanumeric characters, spaces, and _ and - are allowed.')
 
 
-	name = models.CharField(max_length=64, blank=False, null=False, validators=[alphanumeric,alphanumeric_start], unique=True)
-	description = models.TextField()
+	name = models.CharField(max_length=64, blank=False, null=False, validators=[alphanumeric,alphanumeric_start], unique=True, 
+		help_text="A unique name for this capture. Can only contain alpha-numeric characters, spaces, dashes (-), and underscores (_). ")
+	description = models.TextField(
+		help_text="A detailed description of the event. Please add possible rumors to this as the event unfolds.")
 
-	twitter_keywords = models.TextField()
+	twitter_keywords = models.TextField(
+		help_text="A comma separated list of terms. eg. term1, term2, term3")
 
 	status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_CREATED)
 
@@ -63,7 +66,8 @@ class Job(FullAuditModel):
 	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
 	ping_date = models.DateTimeField(null=True, blank=True)
 
-	assigned_worker = models.ForeignKey(User, null=True, blank=True, default=None)
+	assigned_worker = models.ForeignKey(User, null=True, blank=True, default=None,
+		help_text="This list will only display unassigned capture clients. If there are none, you must archive an existing capture.")
 
 	def get_absolute_url(self):
 		return reverse('capture-details', kwargs={ 'pk': self.pk, })
