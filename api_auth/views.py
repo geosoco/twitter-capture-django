@@ -5,6 +5,9 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from api_auth.serializers import *
+from rest_framework import filters
+import django_filters
+from datetime import datetime
 
 
 
@@ -34,6 +37,13 @@ class GroupViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
+
+class JobFilterSet(django_filters.FilterSet):
+    active = django_filters.BooleanFilter(name="deleted_date__isnull")
+    class Meta:
+        model = Job
+        fields = ['active']
+
 class JobViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows Jobs to be viewed or edited.
@@ -42,6 +52,17 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
+    filter_class = JobFilterSet
+
+    def perform_create(self, serializer):
+        serializer.created_by = self.request.user
+        serializer.created_date = datetime.now()
+        serializer.save()
+
+    def perform_destroy(self, serializer):
+        serializer.deleted_by = self.request.user
+        serializer.deleted_date = datetime.now()
+        serializer.save()
 
 class ActiveJobViewSet(viewsets.ModelViewSet):
     """
@@ -52,7 +73,7 @@ class ActiveJobViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        qs = Job.objects.filter(assigned_worker=self.request.user).exclude(archived_date__isnull=False)
+        qs = Job.objects.filter(assigned_worker=self.request.user).exclude(deleted_date__isnull=False)
         return qs
 
 

@@ -4,11 +4,25 @@
   "version": "0.0.1",
   "homepage": "https://github.com/geosoco/",
   "license": "MIT",
-  "private": true,
   "dependencies": {
-    "angular": "~1.3.14",
-    "bootstrap": "~3.3.2",
-    "angular-route": "~1.3.14",
-    "angular-resource": "~1.3.0"
-  }
+    "angular-moment": "~0.10.1",
+    "angular-resource": "~1.4.2",
+    "angular-route": "~1.4.2",
+    "bootstrap": "~3.3.5",
+    "angular-cookies": "~1.4.2",
+    "angular": "~1.4.2",
+    "jquery": "~2.1.4",
+    "spin.js": "~2.3.1"
+  },
+  "authors": [
+    "John Robinson <soco@uw.edu>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/bower_components",
+    "test",
+    "tests"
+  ]
 }

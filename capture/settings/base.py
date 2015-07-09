@@ -126,6 +126,7 @@ THIRD_PARTY_APPS = (
 
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 )
 
 LOCAL_APPS = (
@@ -149,7 +150,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
 

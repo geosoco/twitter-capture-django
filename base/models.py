@@ -18,7 +18,7 @@ class ModifiedByMixin(models.Model):
 
 
 class DeletedByMixin(models.Model):
-	deleted_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+	deleted_date = models.DateTimeField(auto_now=False, null=True, blank=True)
 	deleted_by = models.ForeignKey(User, null=True, blank=True, related_name="%(class)s_deleted_by")
 
 	class Meta:

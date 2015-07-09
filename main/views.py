@@ -37,10 +37,10 @@ class CaptureListView(LoginRequiredMixin, ListView):
 	Listview for Captures
 	"""
 
-	template_name = "capturejob/list.html"
+	template_name = "capturejob/list2.html"
 	context_object_by_name = "capture_list"
 	paginate_by = 10
-	querset = queryset = Job.objects.exclude(archived_date__isnull=False)
+	querset = queryset = Job.objects.exclude(deleted_date__isnull=False)
 
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context

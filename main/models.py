@@ -80,7 +80,7 @@ def on_job_pre_save(sender, instance, *args, **kwargs):
 		old_job = Job.objects.get(pk=instance.id)
 
 		# if we're archiving it, stop it
-		if instance.archived_date is not None and old_job.archived_date is None:
+		if instance.deleted_date is not None and old_job.deleted_date is None:
 			instance.status = Job.STATUS_STOPPED
 
 		# has the status changed?
@@ -94,6 +94,8 @@ def on_job_pre_save(sender, instance, *args, **kwargs):
 				instance.started = datetime.now()
 			elif instance.status == Job.STATUS_STOPPED:
 				instance.stopped = datetime.now()
+
+		# 
 
 
 

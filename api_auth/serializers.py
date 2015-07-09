@@ -30,7 +30,7 @@ class JobSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Job
-		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'archived_date', 'total_count', 'rate', 'ping_date')
+		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'total_count', 'rate', 'ping_date', 'created_by', 'created_date', 'modified_by', 'modified_date', 'deleted_by', 'deleted_date')
 		partial = True
 		#read_only_fields = ('updates',)
 

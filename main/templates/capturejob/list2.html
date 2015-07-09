@@ -1,0 +1,138 @@
+{% extends "angular-app-base.html" %}
+{% load staticfiles %}
+
+{% block ng_app %}captureListApp{% endblock %}
+
+{% block page_style %}
+	ul.styleless { list-style-type: none; padding-left: 0;}
+	ul.styleless li { padding-left: 0; }
+	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+		display: none !important;
+	}
+
+	.job-name { font-size: 18px; font-weight: bold; }
+	.job-worker { opacity: 0.5;}
+	.job-sparkline { height: 1.2em; width: 100%; border: 1px dashed #888; }
+
+	.job-ra-data { color: #888; font-size: 14px; text-align: right; }
+
+	.job-item .data-label, .job-item .data-value { color: #888; font-size: 1em; font-weight: 200; }
+
+	.job-action-btn { heigth: 100%; font-size: 28px; }
+{% endblock %}
+
+
+{% block inner_content %}
+<div class="container">
+		<div ng-controller="toastController" ng-cloak>
+			<ul class="styleless toast-list" ng-show="toasts.length">
+				<li class="row toast-item" ng-repeat="toast in toasts">
+					{% verbatim %}
+					<div class="toast toast-{{toast.level}}" role="alert">
+						<button type="button" class="close" aria-label="Close" ng-click="dismiss(toast.id)"><span aria-hidden="true">&times;</span></button>
+						<span>{{toast.id}} - {{toast.text}}</span>
+					</div>
+					{% endverbatim %}
+				</li>
+			</ul>
+		</div>
+		<div ng-controller="jobListControl" ng-cloak>
+			<div ng-switch on="jobs || null">
+				<div ng-switch-when="null">
+					<span>Loading ...</span>
+				</div>
+				<div ng-switch-default>
+					
+					<div class="job-list-container ng-hide" ng-show="(runningJobs(jobs)).length" >
+						<h2>Running</h2>
+
+						<ul class="styleless job-list col-md-12"  >
+							{% verbatim %}
+
+							<li id="job-{{job.id}}" class="row item-row job-item" ng-repeat="job in jobs | filter:isRunningJob" ng-include="'tpl-job.html'" ng-class="{ 'job-processing': isWorking(job) }" >{{selected}}
+							</li>
+							{% endverbatim %}
+						</ul>
+					</div>
+
+					<div class="job-list-container ng-hide" ng-show="(stoppedJobs(jobs)).length"> 
+						<h2>Stopped</h2>
+						<ul class="styleless job-list col-md-12"  >
+							{% verbatim %}
+
+							<li id="job-{{job.id}}" class="row item-row job-item" ng-repeat="job in jobs | filter:isStoppedJob" ng-include="'tpl-job.html'" ng-class="{ 'job-processing': isWorking(job) }">{{selected}}
+							</li>
+							{% endverbatim %}
+						</ul>
+					</div>
+					<a href="{% url 'capture-create' %}" class="btn btn-primary" id="new-job"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;Create New Capture</a>
+				</div>
+			</div>
+			{% verbatim %}
+			<div>jobs.length == {{jobs.length}}</div>
+			<pre>jobs == {{jobs}}</pre>
+			{% endverbatim %}
+		</div>
+	
+
+
+
+</div>
+
+{% endblock %}
+
+{% block end_scripts %}
+
+{% verbatim %}
+<script type="text/ng-template" id="tpl-job.html">
+
+<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="job-{{job.id}}" data-id="{{job.id}}" data-status="{{job.status}}" >
+			<div class="row">
+				<div class="col-md-1 job-action">
+					<div class="job-action-btn-cntr" ng-switch="job.status">
+						<button ng-switch-when="0" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
+						<button ng-switch-when="1" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
+						<button ng-switch-when="3" class="btn btn-danger job-action-btn"><span class="glyphicon glyphicon-stop" ng-click="onActionClicked(job, 4);"></span></button>
+						<button ng-switch-when="5" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
+						<button ng-switch-default class="btn btn-default job-action-btn disabled"><span class="glyphicon glyphicon-refresh spin-animation "></span></button>
+					</div>
+				</div>
+
+				<div class="col-md-11">
+					<div class="row">
+						<div class="col-md-4 job-name">
+							{{job.name}}
+						</div>
+						<div class="col-md-2 job-worker pull-right">
+							<span class="glyphicon glyphicon-wrench"></span>
+							<span class="job-worker-name">{{job.assigned_worker}}</span>
+						</div>					
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							<div class="job-sparkline"></div>
+						</div>
+						<div class="col-md-2">
+							<span class="data-value">{{job.rate || '-'}}</span><span class="label data-label">per second</span>
+						</div>
+						<div class="col-md-2">
+							<span class="data-value">{{job.total_count || '0'}}</span>
+							<span class="label data-label">tweets</span>
+						</div>			
+						<div class="col-md-3 pull-right">
+							<span class="label data-label">Created </span><span class="label data-value" am-time-ago="job.created_date"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+</script>
+{% endverbatim %}
+
+{% endblock %}
