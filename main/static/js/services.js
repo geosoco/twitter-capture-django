@@ -1,11 +1,39 @@
+var captureServices = angular.module('capture.services', ['ngResource']);
+
+
 /*
-var tweetServices = angular.module('tweetServices', ['ngResource']);
+ * Job
+ */
+captureServices.factory("Job", function($resource){
+	return $resource( "/api/jobs/:id/\/.json", {id: "@id"}, 
+		{
+			query: { 
+				method: 'GET',
+				transformResponse: function(data) { 
+					var results = angular.fromJson(data);
+					return results.results;  
+				},
+				isArray: true
+			},
+			update: { method: 'PUT'}
+		});
+});
 
-tweetServices.factory('Tweet', ['$resource',
-  function($resource){
-    return $resource('/api/tweet/:tweetId.json', {}, {
-      query: {method:'GET', params:{tweetId:'tweets'}, isArray:true}
-    });
-  }]);
+/*
+ * Client
+ */
 
-  */
+ captureServices.factory("Client",function($resource){
+ 	return $resource( "/api/clients/:id/\/.json", {id: "@id"},
+ 		{
+ 			query: {
+ 				method: 'GET',
+ 				transformResponse: function(data) {
+ 					var results = angular.fromJson(data);
+ 					return results.results;
+ 				},
+ 				isArray: true
+ 			},
+ 			update: { method: 'PUT'}
+ 		});
+ });

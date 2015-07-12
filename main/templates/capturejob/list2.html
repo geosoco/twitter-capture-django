@@ -1,7 +1,7 @@
 {% extends "angular-app-base.html" %}
 {% load staticfiles %}
 
-{% block ng_app %}captureListApp{% endblock %}
+{% block ng_app %}capture.app{% endblock %}
 
 {% block page_style %}
 	ul.styleless { list-style-type: none; padding-left: 0;}
@@ -10,15 +10,15 @@
 		display: none !important;
 	}
 
-	.job-name { font-size: 18px; font-weight: bold; }
-	.job-worker { opacity: 0.5;}
-	.job-sparkline { height: 1.2em; width: 100%; border: 1px dashed #888; }
+	.job-title { font-size: 20px; font-weight: bold; }
+	.job-worker { opacity: 0.5; margin-right: 20px; }
+	.job-activity-graph { height: 64px; width: 100%; border: 1px dashed #888; }
 
 	.job-ra-data { color: #888; font-size: 14px; text-align: right; }
 
 	.job-item .data-label, .job-item .data-value { color: #888; font-size: 1em; font-weight: 200; }
 
-	.job-action-btn { heigth: 100%; font-size: 28px; }
+	.job-hamburger { padding-right: 10px; }
 {% endblock %}
 
 
@@ -36,7 +36,10 @@
 				</li>
 			</ul>
 		</div>
+
+
 		<div ng-controller="jobListControl" ng-cloak>
+
 			<div ng-switch on="jobs || null">
 				<div ng-switch-when="null">
 					<span>Loading ...</span>
@@ -65,7 +68,7 @@
 							{% endverbatim %}
 						</ul>
 					</div>
-					<a href="{% url 'capture-create' %}" class="btn btn-primary" id="new-job"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;Create New Capture</a>
+					<a class="btn btn-primary" id="new-job" ng-click="create()"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;Create New Capture</a>
 				</div>
 			</div>
 			{% verbatim %}
@@ -74,6 +77,47 @@
 			{% endverbatim %}
 		</div>
 	
+
+		<!-- -->
+		<div class="" ng-controller="clientListController">
+			<h2>Clients</h2>
+			<ul class="styleless client-list col-md-12 row">
+				{% verbatim %}
+				<li id="client-{{client.id}}" class="client-item item-row col-md-3" ng-repeat="client in clients">
+					<span>{{client.username}}</span>
+					<span> ({{client.active_jobs.length}})</span>
+					<a class="btn btn-xs btn-default" href="#!/job/create/{{client.id}}/" ng-show="client.active_jobs.length == 0"><span class="glyphicon glyphicon-plus-sign"></span></a>
+				</li>
+				{% endverbatim %}
+			</ul>
+		</div>
+
+
+		<!-- modal -->
+		<div class="modal fade" ng-class="{in: controller == 'jobCreateController'}" ng-show="controller == 'jobCreateController'">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">{{dlg.title}}</h4>
+					</div>
+					<div class="modal-body">
+						<div ng-controller="jobEditController">
+							<div ng-include="'tpl-jobform.html'">
+								
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-controller="jobEditController">
+			<!-- <div ng-include="'tpl-jobform.html'">
+				
+			</div> -->
+		</div>
 
 
 
@@ -88,31 +132,42 @@
 
 <div class="container">
 	<div class="panel panel-default">
-		<div class="panel-heading" role="tab" id="job-{{job.id}}" data-id="{{job.id}}" data-status="{{job.status}}" >
+		<div class="panel-heading" id="job-{{job.id}}" data-id="{{job.id}}" data-status="{{job.status}}" >
+			<div class="row">
+				<div class="col-md-8 job-title">{{job.name}}</div>
+				<div class="pull-right job-hamburger">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" id="#job-menu-{{job.id}}" aria-haspopup="true" aria-expanded="false">
+							<span class="sr-only">Job menu toggle</span>
+							<span class="glyphicon glyphicon-menu-hamburger"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Action1 </a></li>
+							<li><a href="#">Action 2</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="job-worker pull-right">
+					<span class="glyphicon glyphicon-wrench"></span>
+					<span class="job-worker-name">{{job.assigned_worker}}</span>
+				</div>					
+
+			</div>
 			<div class="row">
 				<div class="col-md-1 job-action">
 					<div class="job-action-btn-cntr" ng-switch="job.status">
-						<button ng-switch-when="0" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
-						<button ng-switch-when="1" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
-						<button ng-switch-when="3" class="btn btn-danger job-action-btn"><span class="glyphicon glyphicon-stop" ng-click="onActionClicked(job, 4);"></span></button>
-						<button ng-switch-when="5" class="btn btn-success job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
-						<button ng-switch-default class="btn btn-default job-action-btn disabled"><span class="glyphicon glyphicon-refresh spin-animation "></span></button>
+						<button ng-switch-when="0" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
+						<button ng-switch-when="1" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
+						<button ng-switch-when="3" class="btn btn-danger btn-lg job-action-btn"><span class="glyphicon glyphicon-stop" ng-click="onActionClicked(job, 4);"></span></button>
+						<button ng-switch-when="5" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
+						<button ng-switch-default class="btn btn-default btn-lg job-action-btn disabled"><span class="glyphicon glyphicon-refresh spin-animation "></span></button>
 					</div>
 				</div>
 
 				<div class="col-md-11">
 					<div class="row">
-						<div class="col-md-4 job-name">
-							{{job.name}}
-						</div>
-						<div class="col-md-2 job-worker pull-right">
-							<span class="glyphicon glyphicon-wrench"></span>
-							<span class="job-worker-name">{{job.assigned_worker}}</span>
-						</div>					
-					</div>
-					<div class="row">
-						<div class="col-md-2">
-							<div class="job-sparkline"></div>
+						<div class="col-md-4">
+							<div class="job-activity-graph"></div>
 						</div>
 						<div class="col-md-2">
 							<span class="data-value">{{job.rate || '-'}}</span><span class="label data-label">per second</span>
@@ -133,6 +188,42 @@
 
 
 </script>
+
+
+<script type="text/ng-template" id="tpl-jobform.html">
+	<form ng-controller="jobFormController">
+		<div class="form-group name">
+			<label class="control-label" for="id_name">Name *</label>
+			<p class="help-block">A unique name for this capture. Can only contain alpha-numeric characters, spaces, dashes (-), and underscores (_). 
+			</p>
+			<input class="form-control" id="id_name" maxlength="64" name="name" type="text" ng-model="job.name">
+		</div>
+		<div class="form-group description ">
+	        <label class="control-label" for="id_description">Description *</label>
+	        <p class="help-block">A detailed description of the event. Please add possible rumors to this as the event unfolds.</p>
+	        <textarea class="form-control" cols="40" id="id_description" name="description" rows="4" ng-model="job.description"></textarea>
+            
+		</div>
+		<div class="form-group twitter_keywords ">
+            <label class="control-label" for="id_twitter_keywords">Twitter keywords *</label>
+            <p class="help-block">A comma separated list of terms. eg. term1, term2, term3</p>
+            <textarea class="form-control" cols="40" id="id_twitter_keywords" name="twitter_keywords" rows="3" ng-model="job.twitter_keywords"></textarea>
+            
+        </div>
+		<div class="form-group assigned_worker ">
+			<label class="control-label" for="id_assigned_worker">Assigned worker *</label>
+			<p class="help-block">This list will only display unassigned capture clients. If there are none, you must archive an existing capture.</p>
+			<select class="form-control" id="id_assigned_worker" name="assigned_worker" ng-model="job.assigned_worker">
+				<option selected="selected">---------</option>
+				<option value="{{worker.id}}" ng-repeat="worker in workers">{{worker.name}}</option>
+			</select>
+		</div>        
+		<div class="form-actions">
+                <input class="btn btn-primary btn-large" type="submit" value="Submit">
+		</div>
+	</form>
+</script>
+
 {% endverbatim %}
 
 {% endblock %}

@@ -8,11 +8,10 @@
 	<title>{% block title %}SM Capture Manager{% endblock %}</title>
 
 	<link rel="stylesheet" href="{% static "css/normalize.css" %}">
-	<link rel="stylesheet" type="text/css" href="{% static "bower_components/bootstrap/dist/css/bootstrap.css" %}">
+	<link rel="stylesheet" type="text/css" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
 	<link rel="stylesheet" href="{% static "css/default.css" %}">
 
-	<script src="{% static "js/jquery-2.1.1.min.js" %}"></script>
-	<script src="{% static "js/bootstrap.min.js" %}"></script>
+	<base href="/">
 
 	{% block additional_head %}
 	{% endblock %}
@@ -64,17 +63,18 @@
 	</div>
 
 
-	<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 	<script src="{% static "bower_components/angular/angular.js" %}"></script>
 	<script src="{% static "bower_components/angular-resource/angular-resource.js" %}"></script>
 	<script src="{% static "bower_components/angular-route/angular-route.js" %}"></script>
 	<script src="{% static "bower_components/angular-cookies/angular-cookies.js" %}"></script>
 	<script src="{% static "bower_components/moment/moment.js" %}"></script>
 	<script src="{% static "bower_components/angular-moment/angular-moment.js" %}"></script>
-	<script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-	<script src="{% static "js/controllers.js" %}"></script>
+	<script src="{% static "bower_components/jquery/dist/jquery.js" %}"></script>	
+	<script src="{% static "bower_components/bootstrap/dist/js/bootstrap.js" %}"></script>
+
 	<script src="{% static "js/services.js" %}"></script>
-	<script src="{% static "js/main.js" %}"></script>
+	<script src="{% static "js/controllers.js" %}"></script>
+	<script src="{% static "js/app.js" %}"></script>
 
 	{% block end_scripts %}
 	{% endblock %}

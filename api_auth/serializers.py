@@ -34,6 +34,11 @@ class JobSerializer(serializers.ModelSerializer):
 		partial = True
 		#read_only_fields = ('updates',)
 
+class JobIdSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Job
+		fields = ('id')
+
 
 class UpdateSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -41,12 +46,27 @@ class UpdateSerializer(serializers.ModelSerializer):
 		fields = ('date', 'count', 'total_count', 'rate', 'job')
 		
 
+class ClientSerializer(serializers.ModelSerializer):
+	active_jobs = serializers.SerializerMethodField()
+
+
+	def get_active_jobs(self, obj):
+		active_jobs = Job.objects.filter(assigned_worker=obj, archived_date__isnull=True)
+		serializer = JobSerializer(active_jobs, context=self.context, many=True)
+		return serializer.data
+
+	class Meta:
+		model = User
+		fields = ('id', 'username', 'last_login', 'active_jobs')
+		depth = 2
+
+
 class WorkerSerializer(serializers.ModelSerializer):
 	user = UserSerializer(read_only=True)
 
 
 	class Meta:
 		model = Worker
-		fields = ('url', 'user', 'description')
+		fields = ('url', 'user', 'description', 'last_update')
 
 

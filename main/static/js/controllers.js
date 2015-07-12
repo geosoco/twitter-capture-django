@@ -1,62 +1,18 @@
-var captureListApp = angular.module('captureListApp', ['ngCookies', 'angularMoment', 'ngResource']);
+var captureListApp = angular.module('capture.controllers', ['ngCookies', 'angularMoment', 'ngRoute' ]);
+
+
+
+
+
+
+
+
 
 /*
-// for a fixed header at the tope
-captureListApp.run(['$anchorScroll', function($anchorScroll) {
-	$anchorScroll.yOffset = 60;	// always scroll by an extra 60 pixels
-}]);
-*/
-
-captureListApp.run(['$http', '$cookies', '$rootScope', function($http, $cookies, $rootScope) {
-	//$http.defaults.headers.post['X-CSRFToken'] = $cookies['csrftoken'];
-	//$http.defaults.headers.put['X-CSRFToken'] = $cookies['csrftoken'];
-
-	var toast = function(level, msg ) {
-		$rootScope.$emit('toast:create', [level, msg] )
-	}
-
-	$rootScope.toast = {
-		toast: toast,
-		error: function(msg) { console.error(msg); toast('danger', msg); },
-		warn: function(msg) { console.warn(msg); toast('warning', msg); },
-		info: function(msg) { console.info(msg); toast('info', msg); },
-		success: function(msg) { console.info("success: " + msg); toast('success', msg); }
-	} 
-}]);
-
-
-captureListApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
-	$resourceProvider.defaults.stripTrailingSlashes = false;
-
-	$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-	$httpProvider.defaults.xsrfCookieName = 'csrftoken';
-}]);
-
-//
-//
-//
-//
-//
-
-captureListApp.factory("Job", function($resource){
-	return $resource(
-		"/api/jobs/:id/\/.json", 
-		{id: "@id"}, 
-		{
-			query: { 
-				method: 'GET',
-				transformResponse: function(data) { 
-					var results = angular.fromJson(data);
-					return results.results;  
-				},
-				isArray: true
-			},
-			update: { method: 'PUT'}
-		});
-});
-
-
-
+ *
+ * toast controller
+ *
+ */
 captureListApp.controller('toastController', 
 	['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q',
 	function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q) {
@@ -86,8 +42,8 @@ captureListApp.controller('toastController',
 	}])
 
 captureListApp.controller('jobListControl',
-	['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job',
-	function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job) {
+	['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job', 'Client', '$route',
+	function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client, $route) {
 		var client_states = Object.freeze({
 			STATUS_UNKNOWN: 0,
 			STATUS_CREATED: 1,
@@ -171,31 +127,11 @@ captureListApp.controller('jobListControl',
 					console.log("scope.jobs got error: " + data);
 				});
 
-			/*
-			var newJobObj = Job.get({id: oldJob.id}, 
-				function(data) {
-					console.log("Got job " + newJobObj.id + " successfully");
-					console.dir(newJobObj);
-					if(newJobObj.status === oldJob.status) {
-						newJobObj.status = newStatus;
-						newJobObj.$update(function(obj) {
-							$scope.syncJobs();
-						}, function(error) {
-							$rootScope.toast.error("failed to save job (" + oldJob.name + ") : " + error.status + " " + error.statusText )
-							//$scope.$emit('alert:create', ['error', 'failed to save job #' + oldJob.id ]);
-							//$rootScope.$emit('alert:create', ['danger', "failed to get job #" + oldJob.id ] );
-						});
-					} else {
-						// error
-						console.error("OUT OF SYNC")
-					}
-				},
-				function(data) {
-					var msg = "failed to get job #" + oldJob.id ;
-					console.error(msg);
-					$rootScope.emit('alert:create', ['error', "failed to get job #" + oldJob.id ] )
-				});
-			*/
+		}
+
+		$scope.create = function() {
+			$location.path('/job/create/');
+			console.log('creating')
 		}
 
 
@@ -225,6 +161,67 @@ captureListApp.controller('jobListControl',
 }]);
 
 
-captureListApp.controller('editJobController', ['$scope', '$rootScope', function($scope, $rootScope){
+captureListApp.controller('JobController', ['$scope', '$rootScope',
+	function($scope, $rootScope) {
+
 
 }]);
+
+
+captureListApp.controller('jobFormController', ['$scope', '$rootScope', 
+	function($scope, $rootScope){
+
+
+}]);
+
+captureListApp.controller('jobCreateController', ['$scope', '$rootScope', 
+	function($scope, $rootScope){
+
+	$scope.mode = 'create';
+	$scope.title = 'Create a new Job';
+	$scope.job = {};
+
+	$scope.activate = function(data) {
+		console.log("jobCreateController - Active");
+	}
+
+}]);
+
+captureListApp.controller('jobEditController', ['$scope', '$rootScope', '$routeParams',
+	function($scope, $rootScope, $rootParams){
+
+	$scope.mode = 'edit';
+	$scope.title = 'Edit a job';
+	$scope.job = {name: "test"}
+
+
+	$scope.activate = function(data) {
+		console.log("jobEditController - Active");
+	}
+}]);
+
+
+captureListApp.controller('clientListController', ['$scope', '$rootScope', 'Client',
+	function($scope, $rootScope, Client) {
+
+		$scope.unassignedClients = function(clients) {
+		}
+
+
+		$scope.syncClients = function() {
+			$scope.clients = Client.query();
+		}
+
+		/*
+		 *
+		 * initialization
+		 *
+		 */
+
+		 $scope.clients = null;
+		 $scope.syncClients();
+
+
+}]);
+
+

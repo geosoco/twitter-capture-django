@@ -87,3 +87,23 @@ class UpdateViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
+
+class ClientViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for the Users that are clients
+    """
+    queryset = User.objects.filter(groups__name='capture_client')
+    serializer_class = ClientSerializer
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+class WorkerViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for viewing workers
+    """
+    queryset = Worker.objects.all()
+    serializer_class = WorkerSerializer
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
