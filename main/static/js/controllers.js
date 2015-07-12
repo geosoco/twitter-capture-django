@@ -1,4 +1,4 @@
-var captureListApp = angular.module('capture.controllers', ['ngCookies', 'angularMoment', 'ngRoute' ]);
+var captureListApp = angular.module('capture.controllers', ['ngCookies', 'angularMoment' ]);
 
 
 
@@ -42,8 +42,8 @@ captureListApp.controller('toastController',
 	}])
 
 captureListApp.controller('jobListControl',
-	['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job', 'Client', '$route',
-	function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client, $route) {
+	['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job', 'Client', 
+	function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client) {
 		var client_states = Object.freeze({
 			STATUS_UNKNOWN: 0,
 			STATUS_CREATED: 1,
@@ -187,8 +187,8 @@ captureListApp.controller('jobCreateController', ['$scope', '$rootScope',
 
 }]);
 
-captureListApp.controller('jobEditController', ['$scope', '$rootScope', '$routeParams',
-	function($scope, $rootScope, $rootParams){
+captureListApp.controller('jobEditController', ['$scope', '$rootScope',
+	function($scope, $rootScope){
 
 	$scope.mode = 'edit';
 	$scope.title = 'Edit a job';

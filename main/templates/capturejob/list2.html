@@ -23,7 +23,7 @@
 
 
 {% block inner_content %}
-<div class="container">
+<div class="container" ng-controller="CaptureCtrl">
 		<div ng-controller="toastController" ng-cloak>
 			<ul class="styleless toast-list" ng-show="toasts.length">
 				<li class="row toast-item" ng-repeat="toast in toasts">

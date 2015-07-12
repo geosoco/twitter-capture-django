@@ -1,10 +1,10 @@
-var captureApp = angular.module('capture.app', ['ngRoute', 'capture.services', 'capture.controllers']);
+var captureApp = angular.module('capture.app', ['capture.services', 'capture.controllers']);
 
 /*
  * set up app config (csrf )
  */
-captureApp.config(['$resourceProvider', '$httpProvider', '$routeProvider', '$locationProvider', 
-	function($resourceProvider, $httpProvider, $routeProvider, $locationProvider) {
+captureApp.config(['$resourceProvider', '$httpProvider', '$locationProvider', 
+	function($resourceProvider, $httpProvider, $locationProvider) {
 		$resourceProvider.defaults.stripTrailingSlashes = false;
 
 		$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -12,10 +12,6 @@ captureApp.config(['$resourceProvider', '$httpProvider', '$routeProvider', '$loc
 
 		$locationProvider.html5Mode(false).hashPrefix('!');
 
-		$routeProvider
-			.when('/', {controller: 'jobListControl'})
-			.when('/job/create/', {controller: 'jobCreateController'})
-			.when('/job/:id/', {controller: 'jobEditController'})
 }]);
 
 
@@ -25,7 +21,7 @@ captureApp.config(['$resourceProvider', '$httpProvider', '$routeProvider', '$loc
  *  set up toast
  *
  */
-captureApp.run(['$rootScope', '$route', '$controller', function($rootScope, $route, $controller) {
+captureApp.run(['$rootScope', '$controller', function($rootScope, $controller) {
 
 	var toast = function(level, msg ) {
 		$rootScope.$emit('toast:create', [level, msg] )
@@ -39,21 +35,5 @@ captureApp.run(['$rootScope', '$route', '$controller', function($rootScope, $rou
 		success: function(msg) { console.info("success: " + msg); toast('success', msg); }
 	} 
 
-
-	// set the $route on the rootScope
-	$rootScope.$route = $route;
-
-	// add a handler to set the controller name
-	$rootScope.$on("$routeChangeSuccess", function(e, data, previous) {
-    	$rootScope.controller = data.controller;
-
-    	console.log("routeChangeSuccess")
-    	console.dir(e);
-    	console.dir(data);
-
-    	if("activate" in data.controller && typeof data.controller.activate === "function") {
-    		data.controller.activate(data);
-    	}
-	});
 }]);
 
