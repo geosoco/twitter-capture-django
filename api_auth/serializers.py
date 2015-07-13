@@ -6,7 +6,14 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('id', 'username')
+
+
+class UserReadOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id',)
+        read_only_fields = ('username',)
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -21,6 +28,11 @@ class UpdateSimpleSerializer(serializers.ModelSerializer):
 
 class JobSerializer(serializers.ModelSerializer):
 	status = serializers.ChoiceField(choices=Job.STATUS_CHOICES)
+	#assigned_worker_details = UserReadOnlySerializer()
+	assigned_worker_username = serializers.CharField(read_only=True, source="assigned_worker.username")
+	created_by_username = serializers.CharField(read_only=True, source="created_by.username")
+	modified_by_username = serializers.CharField(read_only=True, source="modified_by.username")
+
 	#updates = serializers.SerializerMethodField()
 
 	#def get_updates(self, job):
@@ -28,10 +40,22 @@ class JobSerializer(serializers.ModelSerializer):
 	#	serializer = UpdateSimpleSerializer(instance=updates_queryset, many=True, context=self.context)
 	#	return serializer.data
 
+	def validate_assigned_worker(self, value):
+		if value is None:
+			raise serializers.ValidationError("This job must be assigned to a valid client.")
+		count_active_jobs = Job.objects.filter(assigned_worker=value, archived_date__isnull=True).count()
+		print "got count: ", count_active_jobs
+		if count_active_jobs > 0:
+			raise serializers.ValidationError("Client is already assigned, choose another job")
+		return value
+
 	class Meta:
 		model = Job
-		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'total_count', 'rate', 'ping_date', 'created_by', 'created_date', 'modified_by', 'modified_date', 'deleted_by', 'deleted_date')
+		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'assigned_worker_username', 'total_count', 'rate', 'ping_date', 'created_by', 'created_by_username', 'created_date', 'modified_by', 'modified_by_username', 'modified_date', 'deleted_by', 'deleted_date')
+		#read_only_fields = ('assigned_worker_details',)
+		read_only_fields = ('assigned_worker_username',)
 		partial = True
+		#depth = 2
 		#read_only_fields = ('updates',)
 
 class JobIdSerializer(serializers.ModelSerializer):

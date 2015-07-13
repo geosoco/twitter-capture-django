@@ -19,6 +19,12 @@
 	.job-item .data-label, .job-item .data-value { color: #888; font-size: 1em; font-weight: 200; }
 
 	.job-hamburger { padding-right: 10px; }
+
+	.job-action-btn-cntr { margin: 16px 6px; }
+
+	.job-overview.row { padding-top: 10px; }
+	.job-description { margin-bottom: 20px;  }
+	.job-description, .job-creation, .job-modified { color: #888; font-weight: 200; }
 {% endblock %}
 
 
@@ -94,7 +100,7 @@
 
 
 		<!-- modal -->
-		<div class="modal fade" ng-class="{in: controller == 'jobCreateController'}" ng-show="controller == 'jobCreateController'">
+		<div id="job-form-dlg" class="modal fade">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -130,7 +136,7 @@
 {% verbatim %}
 <script type="text/ng-template" id="tpl-job.html">
 
-<div class="container">
+<div class="container" ng-controller="JobCtrl">
 	<div class="panel panel-default">
 		<div class="panel-heading" id="job-{{job.id}}" data-id="{{job.id}}" data-status="{{job.status}}" >
 			<div class="row">
@@ -141,19 +147,19 @@
 							<span class="sr-only">Job menu toggle</span>
 							<span class="glyphicon glyphicon-menu-hamburger"></span>
 						</button>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action1 </a></li>
-							<li><a href="#">Action 2</a></li>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li><a href="#" ng-click="edit(job)"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Edit</a></li>
+							<li><a href="#" ng-click="archive(job)"><span class="glyphicon glyphicon-book"></span>&nbsp; Archive</a></li>
 						</ul>
 					</div>
 				</div>
 				<div class="job-worker pull-right">
 					<span class="glyphicon glyphicon-wrench"></span>
-					<span class="job-worker-name">{{job.assigned_worker}}</span>
+					<span class="job-worker-name">{{job.assigned_worker_username}}</span>
 				</div>					
 
 			</div>
-			<div class="row">
+			<div class="row job-overview">
 				<div class="col-md-1 job-action">
 					<div class="job-action-btn-cntr" ng-switch="job.status">
 						<button ng-switch-when="0" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
@@ -163,21 +169,37 @@
 						<button ng-switch-default class="btn btn-default btn-lg job-action-btn disabled"><span class="glyphicon glyphicon-refresh spin-animation "></span></button>
 					</div>
 				</div>
-
-				<div class="col-md-11">
+				<div class="col-md-6">
 					<div class="row">
-						<div class="col-md-4">
-							<div class="job-activity-graph"></div>
+						<div class="">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="job-activity-graph"></div>
+								</div>
+							</div>
+							<div  class="row">
+								<div class="col-md-6">
+									<span class="data-value">{{job.total_count || '0'}}</span><span class="label data-label">tweets</span>
+								</div>						
+
+								<div class="col-md-6" style="text-align: right">
+									<span class="data-value">{{job.rate || '-'}}</span><span class="label data-label">per second</span>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-2">
-							<span class="data-value">{{job.rate || '-'}}</span><span class="label data-label">per second</span>
-						</div>
-						<div class="col-md-2">
-							<span class="data-value">{{job.total_count || '0'}}</span>
-							<span class="label data-label">tweets</span>
-						</div>			
-						<div class="col-md-3 pull-right">
-							<span class="label data-label">Created </span><span class="label data-value" am-time-ago="job.created_date"></span>
+					</div>
+				</div>
+
+				<div class="col-md-4 col-md-offset-1">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="job-description">{{job.description| limitTo:80}}{{job.description.length > 80 ? '&hellip;' : ''}}
+							</div>
+							<div class="job-creation">Created by </span><span>{{job.created_by_username}} <span class="label data-value" am-time-ago="job.created_date"></span>
+							</div>
+
+							<div class="job-modified">Last Modified by <span>{{job.modified_by_username}} <span class="label data-value" am-time-ago="job.created_date"></span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -192,34 +214,48 @@
 
 <script type="text/ng-template" id="tpl-jobform.html">
 	<form ng-controller="jobFormController">
-		<div class="form-group name">
+		<div class="form-group name" ng-hide="$hidden_fields.indexOf('name') >= 0">
 			<label class="control-label" for="id_name">Name *</label>
 			<p class="help-block">A unique name for this capture. Can only contain alpha-numeric characters, spaces, dashes (-), and underscores (_). 
 			</p>
-			<input class="form-control" id="id_name" maxlength="64" name="name" type="text" ng-model="job.name">
+			<input class="form-control" id="id_name" maxlength="64" name="name" type="text" ng-model="job.name" required="">
+			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.name"><strong>Error</strong> {{error}}</div>
 		</div>
-		<div class="form-group description ">
+		<div class="form-group description " ng-hide="$hidden_fields.indexOf('description') >= 0">
 	        <label class="control-label" for="id_description">Description *</label>
 	        <p class="help-block">A detailed description of the event. Please add possible rumors to this as the event unfolds.</p>
-	        <textarea class="form-control" cols="40" id="id_description" name="description" rows="4" ng-model="job.description"></textarea>
-            
+	        <textarea class="form-control" cols="40" id="id_description" name="description" rows="4" ng-model="job.description" required=""></textarea>
+            <div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.description"><strong>Error</strong> {{error}}</div>
 		</div>
-		<div class="form-group twitter_keywords ">
+		<div class="form-group twitter_keywords " ng-hide="$hidden_fields.indexOf('twitter_keywords') >= 0">
             <label class="control-label" for="id_twitter_keywords">Twitter keywords *</label>
             <p class="help-block">A comma separated list of terms. eg. term1, term2, term3</p>
-            <textarea class="form-control" cols="40" id="id_twitter_keywords" name="twitter_keywords" rows="3" ng-model="job.twitter_keywords"></textarea>
-            
+            <textarea class="form-control" cols="40" id="id_twitter_keywords" name="twitter_keywords" rows="3" ng-model="job.twitter_keywords" required=""></textarea>
+            <div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.twitter_keywords"><strong>Error</strong> {{error}}</div>
         </div>
-		<div class="form-group assigned_worker ">
+		<div class="form-group assigned_worker " ng-hide="$hidden_fields.indexOf('assigned_worker') >= 0">
 			<label class="control-label" for="id_assigned_worker">Assigned worker *</label>
 			<p class="help-block">This list will only display unassigned capture clients. If there are none, you must archive an existing capture.</p>
-			<select class="form-control" id="id_assigned_worker" name="assigned_worker" ng-model="job.assigned_worker">
-				<option selected="selected">---------</option>
-				<option value="{{worker.id}}" ng-repeat="worker in workers">{{worker.name}}</option>
+			<select class="form-control" id="id_assigned_worker" name="assigned_worker" ng-model="job.assigned_worker" required="">
+				<option value="" selected="selected">---------</option>
+				<option value="{{client.id}}" ng-repeat="client in clients | filter:isUnassigned" ng-selected="client.id == assigned_worker">{{client.username}}</option>
 			</select>
-		</div>        
-		<div class="form-actions">
-                <input class="btn btn-primary btn-large" type="submit" value="Submit">
+			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.assigned_worker"><strong>Error</strong> {{error}}</div>
+		</div>
+		<div class="form-group status" ng-hide="$hidden_fields.indexOf('status') >= 0">
+			<label class="control-label" for="id_status">Status *</label>
+			<p class="help-block">The status of the capture client</p>
+			<select class="form-control" id="id_status" name="status" ng-model="job.status" required="">
+				<option value="{{cs.id}}" ng-repeat="cs in client_states" ng-selected="cs.id == job.status">{{cs.text}}</option>
+
+			</select>
+			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.status"><strong>Error</strong> {{error}}</div>
+		</div>
+		<div class="modal-footer"> 
+			<div class="form-actions pull-right">
+				<input class="btn btn-primary btn-large" type="submit" value="{{dlgParams.submitText}}" ng-click="submit()">
+				<button type="button" class="btn btn-default btn-large" data-dismiss="modal" aria-label="Cancel">Cancel</button>
+			</div>
 		</div>
 	</form>
 </script>
