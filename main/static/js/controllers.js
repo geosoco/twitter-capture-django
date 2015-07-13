@@ -205,10 +205,20 @@
 				// update dialog fields
 				$scope.updateDialogFields(data);
 
+				// reset data
 				$scope.$hidden_fields = [];
+				$scope.$errors = [];
+				$scope.job.$errors = {};
+				$scope.initial = null;
+				$scope.edit = false;
+				$scope.job = null;
 
+
+				// if the message contained a job, we're editing
 				if('job' in data) {
 					$scope.job = data.job;
+					// make a backup
+					$scope.initial = angular.copy($scope.job);
 					$scope.$hidden_fields.push('status', 'assigned_worker');
 					$scope.edit = true;
 				} else {
@@ -248,7 +258,17 @@
 			}
 
 			$scope.isUnassigned = function(client) {
-				return (client.active_jobs.length == 0);
+				//return (client.active_jobs.length == 0 || client.active_jobs.);
+				var assigned_count = 0;
+				if('id' in $scope.job) {
+					for(var i = 0; i < client.active_jobs.length; i++) {
+						if(client.active_jobs[i].id !== $scope.job.id) {
+							assigned_count += 1;
+						}
+					}
+				} 
+
+				return (assigned_count === 0);
 			}
 
 			$scope.unassigned_clients = function() {
@@ -260,24 +280,48 @@
 			}
 
 			$scope.onSaveFailed = function(error) {
-				$rootScope.toast.error("Save failed: " + error)
 
-				// step through all the errors and apply them to the properties
-				angular.forEach(error.data, function(value,key) {
+				$scope.job.$errors = {};
+				$scope.$errors = [];
 
-					// create errors dict
+				// toast an error if there's no reasonable feedback
+				if(!('data' in error)) {
+					var saveFailedMsg = "Failed to save job: " + + error.status + " " + error.statusText;
+					$rootScope.toast.error(saveFailedMsg);
+					$scope.job.$errors["request"] = saveFailedMsg;
+					$scope.$errors = saveFailedMsg;
+				} else {
 					$scope.job.$errors = error.data;
 
-					/*
-					if(!(key in $scope.job.$errors)) {
-						$scope.job.$errors[key] = [];
-					}*/
+					// step through all the errors and apply them to the properties
+					angular.forEach(error.data, function(value,key) {
 
-					// append error to the array
-					//$scope.job.$errors[key] = value;
+						// create errors dict
+						
 
+						/*
+						if(!(key in $scope.job.$errors)) {
+							$scope.job.$errors[key] = [];
+						}*/
 
-				});
+						// append error to the array
+						//$scope.job.$errors[key] = value;
+
+						angular.forEach(value, function(errText, idx){
+							var msg = "";
+
+							if(key == "non_field_errors") {
+								msg = errText;
+							} else {
+								msg = key + ": " + errText;
+							}
+
+							$scope.$errors.push(msg);
+
+						});
+
+					});
+				}
 			}
 
 			$scope.submit = function() {
@@ -289,11 +333,23 @@
 				
 			}
 
+			$scope.onClose = function() {
+
+			}
+
+			$scope.onCancel = function(e) {
+				if('initial' in $scope) {
+					angular.copy($scope.initial, $scope.job);	
+				}
+				$('#job-form-dlg').modal('hide');
+			}
+
 
 			$scope.client_states = client_states;
 
 			$rootScope.$on('job:showCreateUI', $scope.init );
 			$rootScope.$on('job:showEditUI', $scope.init );
+			$rootScope.$on('job:cancelUI', $scope.onCancel );
 
 	}]);
 
@@ -316,6 +372,10 @@
 		$scope.title = 'Edit a job';
 		$scope.job = {name: "test"}
 
+
+		$scope.onCancel = function(e) {
+			$rootScope.$broadcast("job:cancelUI", {})
+		}
 	}]);
 
 

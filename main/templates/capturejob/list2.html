@@ -100,15 +100,15 @@
 
 
 		<!-- modal -->
-		<div id="job-form-dlg" class="modal fade">
-			<div class="modal-dialog">
+		<div id="job-form-dlg" class="modal fade" ng-controller="jobEditController">
+			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="close" ng-click="onCancel()" aria-label="Close"><span aria-hidden="true">&times;</button>
 						<h4 class="modal-title">{{dlg.title}}</h4>
 					</div>
 					<div class="modal-body">
-						<div ng-controller="jobEditController">
+						<div>
 							<div ng-include="'tpl-jobform.html'">
 								
 							</div>
@@ -193,7 +193,7 @@
 				<div class="col-md-4 col-md-offset-1">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="job-description">{{job.description| limitTo:80}}{{job.description.length > 80 ? '&hellip;' : ''}}
+							<div class="job-description">{{job.description| limitTo:80}}{{job.description.length > 50 ? '&hellip;' : ''}}
 							</div>
 							<div class="job-creation">Created by </span><span>{{job.created_by_username}} <span class="label data-value" am-time-ago="job.created_date"></span>
 							</div>
@@ -218,7 +218,7 @@
 			<label class="control-label" for="id_name">Name *</label>
 			<p class="help-block">A unique name for this capture. Can only contain alpha-numeric characters, spaces, dashes (-), and underscores (_). 
 			</p>
-			<input class="form-control" id="id_name" maxlength="64" name="name" type="text" ng-model="job.name" required="">
+			<input class="form-control" id="id_name" maxlength="64" name="name" type="text" ng-model="job.name" required="" ng-readonly="edit == true">
 			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.name"><strong>Error</strong> {{error}}</div>
 		</div>
 		<div class="form-group description " ng-hide="$hidden_fields.indexOf('description') >= 0">
@@ -238,7 +238,7 @@
 			<p class="help-block">This list will only display unassigned capture clients. If there are none, you must archive an existing capture.</p>
 			<select class="form-control" id="id_assigned_worker" name="assigned_worker" ng-model="job.assigned_worker" required="">
 				<option value="" selected="selected">---------</option>
-				<option value="{{client.id}}" ng-repeat="client in clients | filter:isUnassigned" ng-selected="client.id == assigned_worker">{{client.username}}</option>
+				<option value="{{client.id}}" ng-repeat="client in clients | filter:isUnassigned" ng-selected="client.id == job.assigned_worker">{{client.username}}</option>
 			</select>
 			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.assigned_worker"><strong>Error</strong> {{error}}</div>
 		</div>
@@ -251,10 +251,15 @@
 			</select>
 			<div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.status"><strong>Error</strong> {{error}}</div>
 		</div>
+		<div class="form-errors alert alert-danger" ng-show="$errors.length > 0">
+			<ul>
+				<li ng-repeat="text in $errors">{{text}}</li>
+			</ul>
+		</div>
 		<div class="modal-footer"> 
 			<div class="form-actions pull-right">
 				<input class="btn btn-primary btn-large" type="submit" value="{{dlgParams.submitText}}" ng-click="submit()">
-				<button type="button" class="btn btn-default btn-large" data-dismiss="modal" aria-label="Cancel">Cancel</button>
+				<button type="button" class="btn btn-default btn-large" ng-click="onCancel()" aria-label="Cancel">Cancel</button>
 			</div>
 		</div>
 	</form>

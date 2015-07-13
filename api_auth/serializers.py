@@ -41,22 +41,29 @@ class JobSerializer(serializers.ModelSerializer):
 	#	return serializer.data
 
 	def validate_assigned_worker(self, value):
+
+		# validate against none
 		if value is None:
 			raise serializers.ValidationError("This job must be assigned to a valid client.")
-		count_active_jobs = Job.objects.filter(assigned_worker=value, archived_date__isnull=True).count()
-		print "got count: ", count_active_jobs
+
+		# check that the client isn't already assigned
+		active_jobs = Job.objects.filter(assigned_worker=value, archived_date__isnull=True)
+		if self.instance is not None and self.instance.id is not None:
+			active_jobs = active_jobs.exclude(pk=self.instance.id)
+		count_active_jobs = active_jobs.count()
+		
 		if count_active_jobs > 0:
 			raise serializers.ValidationError("Client is already assigned, choose another job")
+
+		# return validation value
 		return value
 
 	class Meta:
 		model = Job
 		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'assigned_worker_username', 'total_count', 'rate', 'ping_date', 'created_by', 'created_by_username', 'created_date', 'modified_by', 'modified_by_username', 'modified_date', 'deleted_by', 'deleted_date')
-		#read_only_fields = ('assigned_worker_details',)
 		read_only_fields = ('assigned_worker_username',)
 		partial = True
-		#depth = 2
-		#read_only_fields = ('updates',)
+
 
 class JobIdSerializer(serializers.ModelSerializer):
 	class Meta:
