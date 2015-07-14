@@ -114,14 +114,14 @@ class ActiveJobViewSet(viewsets.ModelViewSet):
 
 
 
-#class UpdateViewSet(viewsets.ModelViewSet):
-#    """
-#    API endpoint that allows Job Updates to be viewed or edited.
-#    """
-#    queryset = Update.objects.all()
-#    serializer_class = UpdateSerializer
-#    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
-#    permission_classes = (IsAuthenticated,)
+class UpdateViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Job Updates to be viewed or edited.
+    """
+    queryset = Update.objects.all()
+    serializer_class = UpdateSerializer
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
