@@ -2,12 +2,16 @@ from django.contrib.auth.models import User, Group
 from main.models import Job, JobModification, Update
 from worker.models import Worker
 from rest_framework import viewsets
+from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from api_auth.serializers import *
 from rest_framework import filters
 import django_filters
 from datetime import datetime
+from django.db import connection
+import simplejson as json
+
 
 
 
@@ -110,14 +114,14 @@ class ActiveJobViewSet(viewsets.ModelViewSet):
 
 
 
-class UpdateViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows Job Updates to be viewed or edited.
-    """
-    queryset = Update.objects.all()
-    serializer_class = UpdateSerializer
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
-    permission_classes = (IsAuthenticated,)
+#class UpdateViewSet(viewsets.ModelViewSet):
+#    """
+#    API endpoint that allows Job Updates to be viewed or edited.
+#    """
+#    queryset = Update.objects.all()
+#    serializer_class = UpdateSerializer
+#    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+#    permission_classes = (IsAuthenticated,)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -138,4 +142,67 @@ class WorkerViewSet(viewsets.ModelViewSet):
     serializer_class = WorkerSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
+
+
+class UpdateViewSet2(viewsets.ViewSet):
+    """
+    """
+
+    def serialize(self, cursor, delta):
+        result = {}
+        for row in cursor:
+            job_id = row[0]
+            date = row[1]
+            unixdate = row[2]
+            cnt = row[3]
+
+            if job_id not in result:
+                job = {
+                    "job_id": job_id,
+                    "date": date.isoformat(),
+                    "unixdate": unixdate,
+                    "counts": [],
+                    "delta_secs": delta
+                }
+                result[job_id] = job
+
+            result[job_id]["counts"].append(int(cnt))
+
+        return Response(result)
+
+
+    def run_query(self, request, query, params = None):
+        cursor = connection.cursor()
+        cursor.execute(query, params)
+
+        result = self.serialize(cursor, 60)
+
+        cursor.close()
+
+        return result
+
+
+    def list(self,request):
+        query = """
+        select j.id as job_id, from_unixtime(FLOOR(unix_timestamp(date)/60)*60) as date, FLOOR(unix_timestamp(date)/60)*60 as unixdate, sum(count) as cnt, round(avg(count),1) as average
+        from capture.main_update
+        inner join capture.main_job j on j.id = job_id
+        where ISNULL(j.archived_date) and date > DATE_SUB(utc_timestamp(), INTERVAL 1 HOUR)
+        group by j.id, unixdate; 
+        """
+        return self.run_query(request, query)
+
+    def retrieve(self, request, pk=None):
+        query = """
+        select job_id, from_unixtime(FLOOR(unix_timestamp(date)/60)*60) as date, FLOOR(unix_timestamp(date)/60)*60 as unixdate, sum(count) as cnt, round(avg(count),1) as average
+        from capture.main_update
+        where job_id = %s and date > DATE_SUB(utc_timestamp(), INTERVAL 1 HOUR)
+        group by unixdate;
+        """
+        return self.run_query(request, query, [pk])
+
+
+#    def retrieve(self, request, pk=None):
+#        pass
+
 
