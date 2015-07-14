@@ -39,7 +39,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class JobFilterSet(django_filters.FilterSet):
-    active = django_filters.BooleanFilter(name="deleted_date__isnull")
+    active = django_filters.BooleanFilter(name="archived_date__isnull")
     class Meta:
         model = Job
         fields = ['active']
@@ -64,6 +64,38 @@ class JobViewSet(viewsets.ModelViewSet):
         serializer.deleted_date = datetime.now()
         serializer.save()
 
+
+    def has_value_changed(self, instance, data, name):
+        if name in data:
+            if data[name] != getattr(instance, name):
+                return True
+        elif getattr(instance, name):
+            return True
+        return False
+
+    def perform_update(self, serializer):
+        kwargs = {}
+        serializer.modified_by = self.request.user
+        serializer.modified_date = datetime.now()
+
+        # grab objects to compare
+        instance = self.get_object()
+        data = serializer.validated_data
+
+        if self.has_value_changed(instance, data, 'archived_date'):
+            if 'archived_date' in  data and data['archived_date'] is not None:
+                serializer.validated_data['archived_by'] = self.request.user
+
+        
+        # set ping date if right item
+        if instance.assigned_worker is not None and self.request.user.id == instance.assigned_worker.id:
+            data['ping_date'] = datetime.now()
+            kwargs['ping_date'] = datetime.now()
+
+        serializer.save()
+
+
+
 class ActiveJobViewSet(viewsets.ModelViewSet):
     """
     API endpoint for active jobs of the current user
@@ -73,7 +105,7 @@ class ActiveJobViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        qs = Job.objects.filter(assigned_worker=self.request.user).exclude(deleted_date__isnull=False)
+        qs = Job.objects.filter(assigned_worker=self.request.user).exclude(archived_date__isnull=False)
         return qs
 
 

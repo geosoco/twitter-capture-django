@@ -55,5 +55,6 @@ class UpdateAdmin(admin.ModelAdmin):
 
 admin.site.register(Job,JobAdmin)
 admin.site.register(JobModification,JobModificationAdmin)
+admin.site.register(Update, UpdateAdmin)
 
 

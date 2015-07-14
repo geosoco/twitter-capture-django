@@ -26,6 +26,8 @@ class UpdateSimpleSerializer(serializers.ModelSerializer):
 		model = Update
 		fields = ('date', 'total_count', 'rate')
 
+
+
 class JobSerializer(serializers.ModelSerializer):
 	status = serializers.ChoiceField(choices=Job.STATUS_CHOICES)
 	#assigned_worker_details = UserReadOnlySerializer()
@@ -41,6 +43,10 @@ class JobSerializer(serializers.ModelSerializer):
 	#	return serializer.data
 
 	def validate_assigned_worker(self, value):
+
+		# ignore if it isn't changing
+		if value == self.instance.assigned_worker:
+			return value
 
 		# validate against none
 		if value is None:
@@ -60,9 +66,10 @@ class JobSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Job
-		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'assigned_worker_username', 'total_count', 'rate', 'ping_date', 'created_by', 'created_by_username', 'created_date', 'modified_by', 'modified_by_username', 'modified_date', 'deleted_by', 'deleted_date')
-		read_only_fields = ('assigned_worker_username',)
+		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'assigned_worker_username', 'total_count', 'rate', 'ping_date', 'archived_date', 'archived_by', 'created_by', 'created_by_username', 'created_date', 'modified_by', 'modified_by_username', 'modified_date', 'deleted_by', 'deleted_date')
+		read_only_fields = ('assigned_worker_username', 'archived_by')
 		partial = True
+
 
 
 class JobIdSerializer(serializers.ModelSerializer):

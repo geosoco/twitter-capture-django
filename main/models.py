@@ -62,11 +62,14 @@ class Job(FullAuditModel):
 	stopped = models.DateTimeField(null=True, blank=True)
 
 	archived_date = models.DateTimeField(null=True, blank=True)
+	archived_by = models.ForeignKey(User, null=True, blank=True, default=None, related_name='job_archived_by')
+
 	total_count = models.IntegerField(null=True, blank=True)
 	rate = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
 	ping_date = models.DateTimeField(null=True, blank=True)
 
 	assigned_worker = models.ForeignKey(User, null=True, blank=True, default=None,
+		related_name = 'job_assigned_worker',
 		help_text="This list will only display unassigned capture clients. If there are none, you must archive an existing capture.")
 
 	def get_absolute_url(self):
@@ -80,8 +83,9 @@ def on_job_pre_save(sender, instance, *args, **kwargs):
 		old_job = Job.objects.get(pk=instance.id)
 
 		# if we're archiving it, stop it
-		if instance.deleted_date is not None and old_job.deleted_date is None:
+		if instance.archived_date is not None and old_job.archived_date != instance.archived_date:
 			instance.status = Job.STATUS_STOPPED
+
 
 		# has the status changed?
 		if old_job.status != instance.status:
@@ -96,6 +100,7 @@ def on_job_pre_save(sender, instance, *args, **kwargs):
 				instance.stopped = datetime.now()
 
 		# 
+
 
 
 

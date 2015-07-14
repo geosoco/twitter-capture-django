@@ -34,7 +34,7 @@
 			<ul class="styleless toast-list" ng-show="toasts.length">
 				<li class="row toast-item" ng-repeat="toast in toasts">
 					{% verbatim %}
-					<div class="toast toast-{{toast.level}}" role="alert">
+					<div class="alert alert-{{toast.level}}" role="alert">
 						<button type="button" class="close" aria-label="Close" ng-click="dismiss(toast.id)"><span aria-hidden="true">&times;</span></button>
 						<span>{{toast.id}} - {{toast.text}}</span>
 					</div>

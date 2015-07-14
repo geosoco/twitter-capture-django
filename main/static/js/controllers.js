@@ -148,6 +148,22 @@
 					});
 			}
 
+
+			$scope.$on("job:archived", function(e,data){
+				if('id' in data) {
+					var idx = $scope.jobs.map(function(d) { return d.id; }).indexOf(data.id);
+					if(idx >= 0) {
+						$scope.jobs.splice(idx,1);
+					} else {
+						$rootScope.toast.error("Couldn't find archived job with id: " + data.id);
+					}
+				} else {
+					$rootScope.toast.error("Couldn't remove archived job - no id");
+					console.dir(data);
+				}
+				
+			});
+
 			/*
 			 *
 			 * initialization
@@ -177,12 +193,23 @@
 	captureListApp.controller('JobCtrl', ['$scope', '$rootScope',
 		function($scope, $rootScope) {
 
+		$scope.onSaveFailed = function(data) {
+			console.dir(data);
+			$rootScope.toast.error("Failed to archive job: " + data.status + " " + data.statusText );
+		}
+
+		$scope.onSaveSucceeded = function(data) {
+			console.log("job archived");
+			$rootScope.$broadcast("job:archived",{id: data.id});
+		}
+
 		$scope.archive = function(job) {
-			console.log('archive!')
+			job.archived_date = new Date();
+			job.$update($scope.onSaveSucceeded, $scope.onSaveFailed);
 		}
 
 		$scope.edit = function(job) {
-			console.log('edit');
+			
 
 			$rootScope.$broadcast('job:showEditUI', 
 				{ 
