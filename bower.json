@@ -12,7 +12,8 @@
     "angular-cookies": "~1.4.2",
     "angular": "~1.4.2",
     "jquery": "~2.1.4",
-    "spin.js": "~2.3.1"
+    "spin.js": "~2.3.1",
+    "d3": "~3.5.6"
   },
   "authors": [
     "John Robinson <soco@uw.edu>"
