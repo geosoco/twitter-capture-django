@@ -45,7 +45,7 @@ class JobSerializer(serializers.ModelSerializer):
 	def validate_assigned_worker(self, value):
 
 		# ignore if it isn't changing
-		if value == self.instance.assigned_worker:
+		if self.instance is None or value == self.instance.assigned_worker:
 			return value
 
 		# validate against none

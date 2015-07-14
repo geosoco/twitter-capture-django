@@ -320,34 +320,39 @@
 				} else {
 					$scope.job.$errors = error.data;
 
-					// step through all the errors and apply them to the properties
-					angular.forEach(error.data, function(value,key) {
+					if(typeof error.data === 'string') {
+						$scope.$errors.push(error.data);
+					} else if(Array.isArray(error.data)) {
+						// step through all the errors and apply them to the properties
+						angular.forEach(error.data, function(value,key) {
 
-						// create errors dict
-						
+							// create errors dict
+							
 
-						/*
-						if(!(key in $scope.job.$errors)) {
-							$scope.job.$errors[key] = [];
-						}*/
+							/*
+							if(!(key in $scope.job.$errors)) {
+								$scope.job.$errors[key] = [];
+							}*/
 
-						// append error to the array
-						//$scope.job.$errors[key] = value;
+							// append error to the array
+							//$scope.job.$errors[key] = value;
 
-						angular.forEach(value, function(errText, idx){
-							var msg = "";
+							angular.forEach(value, function(errText, idx){
+								var msg = "";
 
-							if(key == "non_field_errors") {
-								msg = errText;
-							} else {
-								msg = key + ": " + errText;
-							}
+								if(key == "non_field_errors") {
+									msg = errText;
+								} else {
+									msg = key + ": " + errText;
+								}
 
-							$scope.$errors.push(msg);
+								$scope.$errors.push(msg);
+
+							});
 
 						});
 
-					});
+					}
 				}
 			}
 
