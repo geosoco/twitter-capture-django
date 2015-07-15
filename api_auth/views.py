@@ -168,7 +168,7 @@ class UpdateViewSet2(viewsets.ViewSet):
 
             result[job_id]["counts"].append(int(cnt))
 
-        return Response(result)
+        return Response(result.values())
 
 
     def run_query(self, request, query, params = None):

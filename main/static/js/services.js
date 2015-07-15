@@ -37,3 +37,25 @@ captureServices.factory("Job", function($resource){
  			update: { method: 'PUT'}
  		});
  });
+
+
+ /*
+ * Update
+ */
+
+ captureServices.factory("Update",function($resource){
+ 	return $resource( "/api/liveupdates/:id/\/.json", {id: "@job_id"},
+ 		{
+ 			query: {
+ 				method: 'GET',
+ 				transformResponse: function(data) {
+ 					var results = angular.fromJson(data);
+ 					return results.results;
+ 				},
+ 				isArray: true
+ 			},
+ 			update: { method: 'PUT'}
+ 		});
+ });
+
+

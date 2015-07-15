@@ -73,7 +73,8 @@
 		function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client) {
 
 			$scope.syncJobs = function() {
-				$scope.jobs = Job.query({active: "True"});	
+				$scope.jobs = Job.query({active: "True"});
+				$scope.job_updates = Update.query();
 			}
 
 			$scope.isRunningJob = function(job) {
