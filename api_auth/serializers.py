@@ -34,6 +34,7 @@ class JobSerializer(serializers.ModelSerializer):
 	assigned_worker_username = serializers.CharField(read_only=True, source="assigned_worker.username")
 	created_by_username = serializers.CharField(read_only=True, source="created_by.username")
 	modified_by_username = serializers.CharField(read_only=True, source="modified_by.username")
+	recent_update = serializers.SerializerMethodField()
 
 	#updates = serializers.SerializerMethodField()
 
@@ -64,10 +65,30 @@ class JobSerializer(serializers.ModelSerializer):
 		# return validation value
 		return value
 
+	def get_recent_update(self, job):
+		updates = Update.objects.filter(job=job).order_by('-date')[:1]
+		if updates is not None and updates.count() > 0:
+			serializer = UpdateSimpleSerializer(
+				instance=updates[0],
+				many=False)
+			return serializer.data
+		else:
+			return {}
+
 	class Meta:
 		model = Job
-		fields = ('id', 'url', 'name', 'description', 'twitter_keywords', 'status', 'task_id', 'first_started', 'started', 'stopped', 'assigned_worker', 'assigned_worker_username', 'total_count', 'rate', 'ping_date', 'archived_date', 'archived_by', 'created_by', 'created_by_username', 'created_date', 'modified_by', 'modified_by_username', 'modified_date', 'deleted_by', 'deleted_date')
-		read_only_fields = ('assigned_worker_username', 'archived_by')
+		fields = (
+			'id', 'url', 'name', 'description', 'twitter_keywords',
+			'status', 'task_id', 'first_started', 'started', 'stopped',
+			'assigned_worker', 'assigned_worker_username', 'total_count',
+			'rate', 'ping_date', 'archived_date', 'archived_by',
+			'created_by', 'created_by_username', 'created_date',
+			'modified_by', 'modified_by_username', 'modified_date',
+			'deleted_by', 'deleted_date', 'recent_update')
+		read_only_fields = (
+			'assigned_worker_username',
+			'archived_by',
+			'recent_update')
 		partial = True
 
 
