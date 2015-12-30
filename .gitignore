@@ -14,3 +14,5 @@ capture/wsgi_params
 capture/boston_wsgi.py
 /static
 .gitconfig
+/.capture_env
+/node_modules/
