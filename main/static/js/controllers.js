@@ -68,9 +68,19 @@
 
 
 
+
+	/*
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
 	captureListApp.controller('jobListControl',
-		['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job', 'Client', 
-		function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client) {
+		['$scope', '$rootScope', '$document', '$cookies', '$sce', '$http', '$location', '$q', 'Job', 'Client', 'Update',
+		function($scope, $rootScope, $document, $cookies, $sce, $http, $location,  $q, Job, Client, Update) {
 
 			$scope.syncJobs = function() {
 				$scope.jobs = Job.query({active: "True"});
@@ -173,23 +183,30 @@
 
 
 			$scope.jobs = null;
+			$scope.job_updates = null;
 			$scope.syncJobs();
 
-			$q.all([$scope.jobs.$promise])
+			$q.all([$scope.jobs.$promise, $scope.job_updates.$promise])
 				.then(function(data){
+					console.log("all data grabbed")
 					console.dir(data[0]);
+					console.dir(data[1]);
 
-					if(data[0].data != null && data[0].data.results) {
-						$scope.jobs = data[0].data.results;
-					}
-
-					//$scope.apply();
-					//$scope.$broadcast("data:loaded");
 				});
 
 
 	}]);
 
+
+	/*
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
 
 	captureListApp.controller('JobCtrl', ['$scope', '$rootScope',
 		function($scope, $rootScope) {
@@ -222,6 +239,13 @@
 
 	}]);
 
+
+
+	/*****************************************************************
+	 * 
+	 * jobFormController
+	 *
+	 *****************************************************************/
 
 	captureListApp.controller('jobFormController', ['$scope', '$rootScope', 'Job', 'Client',
 		function($scope, $rootScope, Job, Client){
@@ -387,6 +411,16 @@
 	}]);
 
 
+
+	/*
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
 	captureListApp.controller('jobCreateController', ['$scope', '$rootScope', 
 		function($scope, $rootScope){
 
@@ -412,6 +446,17 @@
 	}]);
 
 
+
+
+	/*
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
 	captureListApp.controller('clientListController', ['$scope', '$rootScope', 'Client',
 		function($scope, $rootScope, Client) {
 
