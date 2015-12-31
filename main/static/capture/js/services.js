@@ -1,61 +1,63 @@
-var captureServices = angular.module('capture.services', ['ngResource']);
+(function() {
+
+	var captureServices = angular.module('capture.services', ['ngResource']);
 
 
-/*
- * Job
- */
-captureServices.factory("Job", function($resource){
-	return $resource( "/api/jobs/:id/\/.json", {id: "@id"}, 
-		{
-			query: { 
-				method: 'GET',
-				transformResponse: function(data) { 
-					var results = angular.fromJson(data);
-					return results.results;  
+	/*
+	 * Job
+	 */
+	captureServices.factory("Job", function($resource){
+		return $resource( "/api/jobs/:id/\/.json", {id: "@id"}, 
+			{
+				query: { 
+					method: 'GET',
+					transformResponse: function(data) { 
+						var results = angular.fromJson(data);
+						return results.results;  
+					},
+					isArray: true
 				},
-				isArray: true
-			},
-			update: { method: 'PUT'}
-		});
-});
+				update: { method: 'PUT'}
+			});
+	});
 
-/*
- * Client
- */
+	/*
+	 * Client
+	 */
 
- captureServices.factory("Client",function($resource){
- 	return $resource( "/api/clients/:id/\/.json", {id: "@id"},
- 		{
- 			query: {
- 				method: 'GET',
- 				transformResponse: function(data) {
- 					var results = angular.fromJson(data);
- 					return results.results;
- 				},
- 				isArray: true
- 			},
- 			update: { method: 'PUT'}
- 		});
- });
+	 captureServices.factory("Client",function($resource){
+		return $resource( "/api/clients/:id/\/.json", {id: "@id"},
+			{
+				query: {
+					method: 'GET',
+					transformResponse: function(data) {
+						var results = angular.fromJson(data);
+						return results.results;
+					},
+					isArray: true
+				},
+				update: { method: 'PUT'}
+			});
+	 });
 
 
- /*
- * Update
- */
+	/*
+	 * Update
+	 */
 
- captureServices.factory("Update",function($resource){
- 	return $resource( "/api/liveupdates/:id/\/.json", {id: "@job_id"},
- 		{
- 			query: {
- 				method: 'GET',
- 				transformResponse: function(data) {
- 					var results = angular.fromJson(data);
- 					return results.results;
- 				},
- 				isArray: true
- 			},
- 			update: { method: 'PUT'}
- 		});
- });
+	 captureServices.factory("Update",function($resource){
+		return $resource( "/api/liveupdates/:id/\/.json", {id: "@job_id"},
+			{
+				query: {
+					method: 'GET',
+					transformResponse: function(data) {
+						var results = angular.fromJson(data);
+						return results.results;
+					},
+					isArray: true
+				},
+				update: { method: 'PUT'}
+			});
+	 });
 
-
+})();
