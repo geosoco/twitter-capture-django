@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from main.models import Job, Update
+from main.models import Job, Update, JobModification
 from worker.models import Worker
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -8,11 +8,20 @@ from rest_framework.authentication import (
 from rest_framework.permissions import IsAuthenticated
 from api_auth.serializers import (
     UserSerializer, GroupSerializer, JobSerializer, ClientSerializer,
-    UpdateSerializer, WorkerSerializer)
+    UpdateSerializer, WorkerSerializer, JobModificationSerializer)
 import django_filters
-from datetime import datetime
 from django.db import connection
 from django.utils import timezone
+import json
+
+
+def has_value_changed(instance, data, name):
+    if name in data:
+        if data[name] != getattr(instance, name):
+            return True
+    elif getattr(instance, name):
+        return True
+    return False
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -72,25 +81,19 @@ class JobViewSet(viewsets.ModelViewSet):
         serializer.deleted_date = timezone.now()
         serializer.save()
 
-    def has_value_changed(self, instance, data, name):
-        if name in data:
-            if data[name] != getattr(instance, name):
-                return True
-        elif getattr(instance, name):
-            return True
-        return False
 
     def perform_update(self, serializer):
         kwargs = {}
+        now = timezone.now()
         serializer.modified_by = self.request.user
-        serializer.modified_date = timezone.now()
+        serializer.modified_date = now
 
         # grab objects to compare
         instance = self.get_object()
         data = serializer.validated_data
 
-        if self.has_value_changed(instance, data, 'archived_date'):
-            if 'archived_date' in data and data['archived_date'] is not None:
+        if has_value_changed(instance, data, 'archived_date'):
+            if data.get('archived_date', None) is not None:
                 serializer.validated_data['archived_by'] = self.request.user
 
         # set ping date if right item
@@ -99,7 +102,55 @@ class JobViewSet(viewsets.ModelViewSet):
             data['ping_date'] = timezone.now()
             kwargs['ping_date'] = timezone.now()
 
-        serializer.save()
+        # build other diff
+        diff = {}
+        if has_value_changed(instance, data, "name"):
+            nd = {}
+            nd['old'] = data.get('name', None)
+            nd['new'] = instance.name
+            diff['name'] = nd
+
+        if has_value_changed(instance, data, "description"):
+            desc = {}
+            desc['old'] = data.get('description', None)
+            desc['new'] = instance.description
+            diff['description'] = desc
+
+        if has_value_changed(instance, data, "twitter_keywords"):
+            tk = {}
+            old_kws = data.get('twitter_keywords', {})
+            new_kws = instance.twitter_keywords
+            tk['old'] = old_kws
+            tk['new'] = new_kws
+            old_keywords = set([w.strip() for w in old_kws.split(',')])
+            new_keywords = set([w.strip() for w in new_kws.split(',')])
+            additions =  old_keywords - new_keywords
+            deletions =  new_keywords - old_keywords
+            tk['additions'] = list(additions)
+            tk['deletions'] = list(deletions)
+            # set keywords dict
+            diff['twitter_keywords'] = tk
+
+
+        ret = super(JobViewSet, self).perform_update(serializer)
+
+        # if we get this far, then save the modification
+
+        if len(diff.keys()) > 0:
+            # serialize the text
+            diff_text = json.dumps(diff)
+            
+            modification = JobModification(
+                changes=diff_text,
+                job=instance,
+                modified_by=self.request.user,
+                modified_date=now
+            )
+
+            modification.save()
+
+
+        return ret
 
 
 class ActiveJobViewSet(viewsets.ModelViewSet):
@@ -221,3 +272,18 @@ class UpdateViewSet2(viewsets.ViewSet):
 
 #    def retrieve(self, request, pk=None):
 #        pass
+
+
+class JobModificationViewSet(viewsets.ModelViewSet):
+    """
+    Job Modification View
+    """
+
+    queryset = JobModification.objects.all()
+    serializer_class = JobModificationSerializer
+    authentication_classes = (SessionAuthentication,
+                              BasicAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+
