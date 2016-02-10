@@ -15,7 +15,7 @@
 		<tr ng-repeat="c in lc.clients">
 			<td><a ui-sref="client.edit({id:c.id})">{{c.id}}</a></td>
 			<td><a ui-sref="client.edit({id:c.id})">{{c.username}}</a></td>
-			<td>{{c.active_jobs[0]}}</td>
+			<td>{{c.active_jobs[0].name}}</td>
 			<td>{{c.auth_token.key}}</td>
 			<td>
 				<div class="btn-toolbar" role="toolbar" aria-label="Actions for this client">
