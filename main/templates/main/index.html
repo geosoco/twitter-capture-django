@@ -1,0 +1,29 @@
+{% extends "angular-app-base.html" %}
+{% load staticfiles %}
+
+{% block ng_app %}main.app{% endblock %}
+
+{% block page_body %}
+<header class="main" ng-controller="HeaderCtrl as hdr" ng-include src="'{% static "main/header.html" %}'">
+</header>
+<div>
+	<div ui-view></div>
+</div>
+
+{% endblock %}
+
+
+
+{% block end_scripts %}
+	<script src="{% static "main/services.js" %}"></script>
+	<script src="{% static "main/components/endpoint.factories.js" %}"></script>
+	<script src="{% static "main/capture/capture.config.js" %}"></script>
+	<script src="{% static "main/capture/capture.controllers.js" %}"></script>
+	<script src="{% static "main/app.js" %}"></script>
+	<script src="{% static "main/app.config.js" %}"></script>
+	<script src="{% static "main/app.controllers.js" %}"></script>
+	<script src="{% static "main/archive/config.js" %}"></script>
+	<script src="{% static "main/archive/controllers.js" %}"></script>
+	<script src="{% static "main/client/config.js" %}"></script>
+	<script src="{% static "main/client/controllers.js" %}"></script>	
+{% endblock %}

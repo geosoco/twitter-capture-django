@@ -1,0 +1,28 @@
+<div class="container">
+
+	<div ng-if="capture.model != undefined">
+		<div>capture.model: {{capture.model}}</div>
+		<div>capture.model.$resolved: {{capture.model.$resolved}}</div>
+		<div>capture.model.id: {{capture.model.id}}</div>
+		<div>{{model.id}}</div>
+		<div>test</div>
+	</div>
+	
+	<form name="form" class="form">
+		<div class="form-group">
+			<label for="captureName">Name</label>
+			<input class="form-control" type="text" id="captureName" placeholder="Name" ng-model="model.name">
+		</div>
+		<div class="form-group">
+			<label for="captureDescr">Description</label>
+			<textarea class="form-control" id="captureDescr" placeholder="Description" ng-model="model.description"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="idTerms">Twitter Keywords</label>
+			<textarea class="form-control" id="idTerms" placeholder="Terms" ng-model="model.twitter_keywords"></textarea>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-default">Save</button>
+		</div>
+	</form>
+</div>
