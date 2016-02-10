@@ -1,0 +1,45 @@
+	<h1>{{fc.verb}} Client</h1>
+
+	<form name="form" class="form" ng-submit="fc.submitForm(form.$valid)" novalidate>
+		<div class="form-group" ng-class="{ 'has-error': form.username.$invalid || fc.errors.username }">
+			<label for="username">Name</label>
+			<input class="form-control" type="text" name="username" placeholder="Name" ng-model="fc.model.username" required />
+			<div class="help-block" ng-messages="form.username.$error"  ng-show="!form.username.$pristine">
+				<ul ng-show="fc.errors.username || !form.username.$pristine">
+					<li ng-message="required">Field is required.</li>
+					<li ng-message="minlength">must be at least 1 character long.</li>
+					<li ng-message="maxlength">Field is too long.</li>
+					<li ng-repeat="err in fc.errors.username">{{err}}</li>
+				</ul>
+			</div>
+			<div class="help-block" ng-show="fc.errors.username">
+				<ul>
+					
+				</ul>
+			</div>
+		</div>
+		<div class="form-group" ng-class="{ 'has-error': form.password.$invalid }">
+			<label for="password">Password</label>
+			<input class="form-control" type="password" name="password" placeholder="Password" ng-model="fc.model.password" required />
+			<div class="help-block" ng-messages="form.password.$error"  ng-show="!form.password.$pristine">
+				<div ng-message="required">Field is required.</div>
+				<div ng-message="minlength">must be at least 1 character long.</div>
+				<div ng-message="maxlength">Field is too long.</div>
+			</div>
+			<div class="help-block" ng-show="fc.errors.password">
+				<ul>
+					<li ng-repeat="err in fc.errors.password">{{err}}</li>
+				</ul>
+			</div>			
+		</div>
+		<div class="alert alert-danger" ng-show="fc.formerrors">
+			<ul>
+				<li ng-repeat="err in fc.formerrors">{{err}}</li>
+			</ul>
+		</div>
+
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary" ng-disabled="form.$invalid">Save</button>
+		</div>
+	</form>
+

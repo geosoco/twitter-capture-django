@@ -1,0 +1,25 @@
+<div class="container">
+	<h1>Root</h1>
+	<div class="row">
+		<div ui-view="main"></div>
+	</div>
+
+	<div class="row">
+		<div class="details-panel">
+			<div class="details-tab-selector">
+				<ul class="nav nav-tabs">
+					<li role="presentation"><a ui-sref="capture.details()">Details</a></li>
+					<li role="presentation"><a ui-sref="capture.graphs()">Graphs</a></li>
+					<li role="presentation"><a ui-sref="capture.tweets()">Tweets</a></li>
+					<li role="presentation"><a ui-sref="capture.history()">History</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div ui-view="details"></div>
+
+	</div>
+
+</div>

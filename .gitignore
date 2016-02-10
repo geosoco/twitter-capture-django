@@ -16,3 +16,6 @@ capture/boston_wsgi.py
 .gitconfig
 .idea/
 capture/assets
+/.capture_env
+/node_modules/
+capture/settings/local_vm.py

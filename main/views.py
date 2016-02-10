@@ -1,4 +1,4 @@
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 
@@ -29,6 +29,12 @@ logger = logging.getLogger(__name__)
 def test(request):
 	return HttpResponse("test view")
 
+
+class MainAppView(LoginRequiredMixin, TemplateView):
+	"""
+	TemplateView
+	"""
+	template_name = "main/index.html"
 
 
 

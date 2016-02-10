@@ -1,0 +1,22 @@
+<h1>Archives</h1>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>id</th>
+			<th>name</th>
+			<th>date</th>
+			<th>description</th>
+			<th>twitter keywords</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="arch in listctrl.archives">
+			<td>{{arch.id}}</td>
+			<td>{{arch.name}}</td>
+			<td>{{arch.created_date | date: 'mediumDate'}}</td>
+			<td>{{arch.description}}</td>
+			<td>{{arch.twitter_keywords}}</td>
+		</tr>
+	</tbody>
+</table>

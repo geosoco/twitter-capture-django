@@ -4,13 +4,14 @@ from rest_framework import routers
 from api_auth import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UserViewSet, base_name='users')
 router.register(r'groups', views.GroupViewSet)
 router.register(r'jobs', views.JobViewSet)
 router.register(r'activejobs', views.ActiveJobViewSet, base_name='activejobs')
 router.register(r'update', views.UpdateViewSet)
-router.register(r'clients', views.ClientViewSet)
+router.register(r'clients', views.ClientViewSet, base_name='clients')
 router.register(r'liveupdates', views.UpdateViewSet2, base_name='liveupdates')
+router.register(r'jobmodifications', views.JobModificationViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

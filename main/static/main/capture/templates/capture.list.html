@@ -1,0 +1,26 @@
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1>List!</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<button class="btn btn-default" ui-sref="capture.create">Create Capture</button>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div ng-controller="CaptureListCtrl as jobs">
+				<ul class="styleless">
+					<li ng-repeat="job in jobs.active_jobs" ng-include="'static/main/capture/templates/capture.list.item.html'"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

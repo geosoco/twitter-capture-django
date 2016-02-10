@@ -163,9 +163,9 @@
 				<div class="col-md-1 job-action">
 					<div class="job-action-btn-cntr" ng-switch="job.status">
 						<button ng-switch-when="0" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
-						<button ng-switch-when="1" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
-						<button ng-switch-when="3" class="btn btn-danger btn-lg job-action-btn"><span class="glyphicon glyphicon-stop" ng-click="onActionClicked(job, 4);"></span></button>
-						<button ng-switch-when="5" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play" ng-click="onActionClicked(job, 2);"></span></button>
+						<button ng-switch-when="1" ng-click="onActionClicked(job, 2);" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
+						<button ng-switch-when="3" ng-click="onActionClicked(job, 4);" class="btn btn-danger btn-lg job-action-btn"><span class="glyphicon glyphicon-stop"></span></button>
+						<button ng-switch-when="5" ng-click="onActionClicked(job, 2);" class="btn btn-success btn-lg job-action-btn"><span class="glyphicon glyphicon-play"></span></button>
 						<button ng-switch-default class="btn btn-default btn-lg job-action-btn disabled"><span class="glyphicon glyphicon-refresh spin-animation "></span></button>
 					</div>
 				</div>
