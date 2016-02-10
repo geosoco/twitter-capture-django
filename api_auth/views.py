@@ -5,14 +5,16 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication, TokenAuthentication)
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from api_auth.serializers import (
     UserSerializer, GroupSerializer, JobSerializer, ClientSerializer,
     UpdateSerializer, WorkerSerializer, JobModificationSerializer)
 import django_filters
-from django.db import connection
+from django.db import connection, transaction
 from django.utils import timezone
 import json
+
 
 
 def has_value_changed(instance, data, name):
@@ -81,7 +83,7 @@ class JobViewSet(viewsets.ModelViewSet):
         serializer.deleted_date = timezone.now()
         serializer.save()
 
-
+    @transaction.atomic
     def perform_update(self, serializer):
         kwargs = {}
         now = timezone.now()
@@ -188,6 +190,21 @@ class ClientViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,
                               BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        serializer.created_by = self.request.user
+        serializer.created_date = timezone.now()
+        instance = serializer.save()
+
+        
+        g = Group.objects.get(name='capture_client') 
+        instance.groups.add(g)
+
+        # create auth token for the user
+        Token.objects.get_or_create(user=instance)
+
+        instance.save()
 
 
 class WorkerViewSet(viewsets.ModelViewSet):

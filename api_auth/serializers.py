@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from main.models import Job, JobModification, Update
 from worker.models import Worker
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,10 +104,16 @@ class UpdateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Update
 		fields = ('date', 'count', 'total_count', 'rate', 'job')
-		
+
+
+class TokenSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Token
+		fields = ('key', 'created')
 
 class ClientSerializer(serializers.ModelSerializer):
 	active_jobs = serializers.SerializerMethodField()
+	auth_token = TokenSerializer(read_only=True)
 
 
 	def get_active_jobs(self, obj):
@@ -116,7 +123,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ('id', 'username', 'last_login', 'active_jobs')
+		fields = (
+			'id', 'username', 'last_login', 'active_jobs', 'auth_token',)
 		depth = 2
 
 
