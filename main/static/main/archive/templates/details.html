@@ -1,0 +1,26 @@
+<div>
+	<h3>Details</h3>
+	<div>{{dv.model | json}}</div>
+	<div class="row">
+		<table class="table table-striped">
+			<tbody>
+				<tr><td>id</td><td ng-bind="dv.model.id"></td></tr>
+				<tr><td>name</td><td ng-bind="dv.model.name"></td></tr>
+				<tr><td>first started</td><td ng-bind="dv.model.first_started"></td></tr>
+				<tr><td>most recently started</td><td ng-bind="dv.model.started"></td></tr>
+				<tr><td>most recently stopped</td><td ng-bind="dv.model.stopped"></td></tr>
+				<tr><td>assigned worker</td><td ng-bind="dv.model.assigned_worker"></td></tr>
+				<tr><td>assigned worker username</td><td ng-bind="dv.model.assigned_worker_username"></td></tr>
+				<tr><td>total_count</td><td ng-bind="dv.model.total_count"></td></tr>
+				<tr><td>rate</td><td ng-bind="dv.model.rate"></td></tr>
+				<tr><td>most recent ping date</td><td ng-bind="dv.model.ping_date"></td></tr>
+				<tr><td>archived date</td><td ng-bind="dv.model.archived_date"></td></tr>
+				<tr><td>archived by</td><td ng-bind="dv.model.archived_by"></td></tr>
+				<tr><td>creation date</td><td ng-bind="dv.model.created_date"></td></tr>
+				<tr><td>created by id</td><td><span ng-bind="dv.model.created_by_username"></span> (id: <span ng-bind="dv.model.created_by"></span>)</td></tr>
+
+
+			</tbody>
+		</table>
+	</div>
+</div>

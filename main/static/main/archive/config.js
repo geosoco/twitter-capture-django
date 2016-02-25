@@ -16,7 +16,14 @@
 				controller: "ArchiveListCtrl as listctrl"
 
 			})
-
+			.state("archive.details", {
+				url: "/{id:int}",
+				params: {
+					details: {value: "details", squash: true}
+				},
+				templateUrl: "/static/main/archive/templates/details.html",
+				controller: "ArchiveDetailsViewCtrl as dv"
+			})
 	}
 
 	ArchiveConfig.$inject = ["$stateProvider"];
