@@ -7,10 +7,11 @@ function HomeConfig($stateProvider) {
 	$stateProvider
 		.state("main", {
 			url: "/",
-			templateUrl: "/static/main/capture/templates/capture.list.html"
+			templateUrl: "/static/main/capture/templates/capture.list.html",
+			controller: "CaptureListCtrl as capture"
 		})
 		.state("capture", {
-			url: "/capture/{id:int}",
+			url: "/capture",
 			abstract: true,
 			views: {
 				"": {
@@ -21,6 +22,64 @@ function HomeConfig($stateProvider) {
 					templateUrl: "/static/main/capture/templates/capture.edit.html",
 					controller: "CaptureEditCtrl as capture"
 				}
+			}
+		})
+		.state("capture.create", {
+			url: "/create",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.html"
+				},
+			}
+		})
+		.state("capture.create.reddit", {
+			url: "/reddit",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.reddit.html"
+				},
+			}
+		})
+		.state("capture.create.reddit.randomsample", {
+			url: "/randomsample",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.reddit.randomsample.html"
+				},
+			}
+		})
+		.state("capture.create.reddit.streamfilters", {
+			url: "/streamfilters",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.reddit.streamfilters.html"
+				},
+			}
+		})
+		.state("capture.create.twitter", {
+			url: "/twitter",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.twitter.html"
+				},
+			}
+		})
+		.state("capture.create.twitter.randomsample", {
+			url: "/randomsample",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.twitter.randomsample.html",
+					controller: "CaptureCreateTwitterCtrl as cctc"
+				},
+			}
+		})
+		.state("capture.create.twitter.streamfilters", {
+			url: "streamfilters",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.create.twitter.streamfilters.html",
+					controller: "CaptureCreateTwitterCtrl as cctc"
+				},
 			}
 		})
 		.state("capture.details", {

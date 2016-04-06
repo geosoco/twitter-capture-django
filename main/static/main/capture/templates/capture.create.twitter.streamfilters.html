@@ -1,0 +1,12 @@
+<fieldset class="form-group">
+    <label for="NameTextarea">Capture name</label>
+    <input type="text" class="form-control" id="NameTextarea" ng-model="cctc.model.name">
+</fieldset>
+<div id="Keywords">
+    <fieldset class="form-group">
+    <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
+    <textarea class="form-control" id="KeywordsTextarea" rows="3"></textarea>
+    </fieldset>
+</div>
+<button class="btn btn-default" ng-click="cctc.submit()">Submit</button>
+<pre>{{ cctc|json }}</pre>

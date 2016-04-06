@@ -66,13 +66,34 @@
 
 
 	/*
+	 * CaptureCreateTwitterCtrl
+	 *
+	 *
+	 */
+
+	function CaptureCreateTwitterCtrl($stateParams, $scope, CaptureFactory) {
+		var vm = this;
+		vm.test = "LKJ";
+		vm.model = {"name": "test"};
+		vm.submit = function(){
+			console.log("cookies")
+		}
+	}
+
+	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
+
+
+	/*
 	 * CaptureEditCtrl
 	 *
 	 *
 	 */
 
 	function CaptureEditCtrl($stateParams, $scope, CaptureFactory) {
+		var vm = this;
 
+		vm.step = $stateParams.step;
+		console.log(vm.step);
 	}
 
 	CaptureEditCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
@@ -154,6 +175,6 @@
 		.controller('CaptureTweetsViewCtrl', CaptureTweetsViewCtrl)
 		.controller('CaptureRootCtrl', CaptureRootCtrl)
 		.controller('CaptureTermHistoryViewCtrl', CaptureTermHistoryViewCtrl)
-
+		.controller('CaptureCreateTwitterCtrl', CaptureCreateTwitterCtrl)
 
 })();
