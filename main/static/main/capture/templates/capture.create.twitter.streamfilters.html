@@ -5,7 +5,7 @@
 <div id="Keywords">
     <fieldset class="form-group">
     <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
-    <textarea class="form-control" id="KeywordsTextarea" rows="3"></textarea>
+    <textarea class="form-control" id="KeywordsTextarea" rows="3" ng-model="cctc.model.terms"></textarea>
     </fieldset>
 </div>
 <button class="btn btn-default" ng-click="cctc.submit()">Submit</button>

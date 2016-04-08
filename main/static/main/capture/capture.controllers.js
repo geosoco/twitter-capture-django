@@ -74,13 +74,31 @@
 	function CaptureCreateTwitterCtrl($stateParams, $scope, CaptureFactory) {
 		var vm = this;
 		vm.test = "LKJ";
-		vm.model = {"name": "test"};
+		vm.model = {"name": "", "terms": []};
 		vm.submit = function(){
 			console.log("cookies")
 		}
 	}
 
 	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
+
+
+	/*
+	 * CaptureCreateRedditCtrl
+	 *
+	 *
+	 */
+
+	function CaptureCreateRedditCtrl($stateParams, $scope, CaptureFactory) {
+		var vm = this;
+		vm.test = "LKJ";
+		vm.model = {"name": "", "terms": [], "subreddits": [], "threads": [], "chainrxn": false};
+		vm.submit = function(){
+			console.log("cookies")
+		}
+	}
+
+	CaptureCreateRedditCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
 
 
 	/*
@@ -176,5 +194,6 @@
 		.controller('CaptureRootCtrl', CaptureRootCtrl)
 		.controller('CaptureTermHistoryViewCtrl', CaptureTermHistoryViewCtrl)
 		.controller('CaptureCreateTwitterCtrl', CaptureCreateTwitterCtrl)
+		.controller('CaptureCreateRedditCtrl', CaptureCreateRedditCtrl)
 
 })();

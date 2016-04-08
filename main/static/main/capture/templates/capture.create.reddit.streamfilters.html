@@ -1,28 +1,28 @@
 <fieldset class="form-group">
     <label for="NameTextarea">Capture name</label>
-    <textarea class="form-control" id="NameTextarea" rows="1"></textarea>
+    <input type="text" class="form-control" id="NameTextarea" ng-model="ccrc.model.name">
 </fieldset>
 <div id="Keywords">
     <fieldset class="form-group">
     <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb")</label>
-    <textarea class="form-control" id="KeywordsTextarea" rows="3"></textarea>
+    <textarea class="form-control" id="KeywordsTextarea" rows="3" ng-model="ccrc.model.terms"></textarea>
     </fieldset>
 </div>
 <div id="Subreddits">
     <fieldset class="form-group">
     <label for="SubredditsTextarea">Subreddits to capture</label>
-    <textarea class="form-control" id="SubredditsTextarea" rows="3">news, worldnews, politics, truenews</textarea>
+    <textarea class="form-control" id="SubredditsTextarea" rows="3" ng-model="ccrc.model.subreddits">news, worldnews, politics, truenews</textarea>
     </fieldset>
 </div>
 <div id="Threads">
     <fieldset class="form-group">
     <label for="ThreadsTextarea">Threads to capture if applicable (by id, eg: 4dgynt)</label>
-    <textarea class="form-control" id="SubredditsTextarea" rows="3"></textarea>
+    <textarea class="form-control" id="SubredditsTextarea" rows="3" ng-model="ccrc.model.threads"></textarea>
     </fieldset>
 </div>
 <div id="additional options">
     <label>
-        <input type="checkbox"> If a comment links to another relevant thread, capture that thread too [broken]
+        <input type="checkbox" ng-model="ccrc.model.chainrxn"> If a comment links to another relevant thread, capture that thread too [broken]
     </label>
 </div>
-<button class="btn btn-primary">Submit</button>
+<button class="btn btn-primary" ng-click="ccrc.submit()">Submit</button>

@@ -1,11 +1,11 @@
 <fieldset class="form-group">
     <label for="NameTextarea">Capture name</label>
-    <textarea class="form-control" id="NameTextarea" rows="1"></textarea>
+    <input type="text" class="form-control" id="NameTextarea" ng-model="ccrc.model.name">
 </fieldset>
 <div id="Subreddits">
     <fieldset class="form-group">
     <label for="SubredditsTextarea">List specific subreddits to capture from, or leave blank for all of Reddit.</label>
-    <textarea class="form-control" id="SubredditsTextarea" rows="3"></textarea>
+    <textarea class="form-control" id="SubredditsTextarea" rows="3" ng-model="ccrc.modelsubreddits"></textarea>
     </fieldset>
 </div>
-<button class="btn btn-primary">Submit</button>
+<button class="btn btn-primary" ng-click="ccrc.submit()">Submit</button>

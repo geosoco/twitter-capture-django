@@ -44,7 +44,8 @@ function HomeConfig($stateProvider) {
 			url: "/randomsample",
 			views: {
 				"main@capture": {
-					templateUrl: "/static/main/capture/templates/capture.create.reddit.randomsample.html"
+					templateUrl: "/static/main/capture/templates/capture.create.reddit.randomsample.html",
+					controller: "CaptureCreateRedditCtrl as ccrc"
 				},
 			}
 		})
@@ -52,7 +53,8 @@ function HomeConfig($stateProvider) {
 			url: "/streamfilters",
 			views: {
 				"main@capture": {
-					templateUrl: "/static/main/capture/templates/capture.create.reddit.streamfilters.html"
+					templateUrl: "/static/main/capture/templates/capture.create.reddit.streamfilters.html",
+					controller: "CaptureCreateRedditCtrl as ccrc"
 				},
 			}
 		})
