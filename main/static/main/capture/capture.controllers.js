@@ -71,7 +71,7 @@
 	 *
 	 */
 
-	function CaptureCreateTwitterCtrl($stateParams, $scope, CaptureFactory) {
+	function CaptureCreateTwitterCtrl($stateParams, $scope, uiGmapIsReady, CaptureFactory) {
 		var vm = this;
 		vm.test = "LKJ";
 		vm.model = {"name": "", "terms": [], "georects": [], "selectedRectangle": null};
@@ -92,6 +92,12 @@
 			rectangleOptions: { editable: true, draggable: true}
 		}
 
+		uiGmapIsReady.promise(1).then(function(instances){
+			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'rectanglecomplete', function (e) {
+				console.log(e.getBounds());
+			});
+		})
+
 		vm.rectangleClicked = function(rect, eventName, arguments, model){
 			console.log("clicked")
 			console.dir(rect)
@@ -104,13 +110,11 @@
 				return;
 			}
 
-			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'circlecomplete', function (e) {
-				console.log(e.getBounds());
-			});
+
 		});
 	}
 
-	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
+	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'uiGmapIsReady', 'CaptureFactory'];
 
 
 	/*
