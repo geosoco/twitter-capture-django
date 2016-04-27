@@ -21,7 +21,8 @@
     "toastr": "^2.1.2",
     "angular-formly": "^7.3.9",
     "angular-formly-templates-bootstrap": "^6.2.0",
-    "angular-messages": "^1.5.0"
+    "angular-messages": "^1.5.0",
+    "angular-google-maps": "^2.3.2"
   },
   "authors": [
     "John Robinson <soco@uw.edu>"

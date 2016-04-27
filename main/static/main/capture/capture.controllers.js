@@ -74,10 +74,40 @@
 	function CaptureCreateTwitterCtrl($stateParams, $scope, CaptureFactory) {
 		var vm = this;
 		vm.test = "LKJ";
-		vm.model = {"name": "", "terms": []};
+		vm.model = {"name": "", "terms": [], "georects": [], "selectedRectangle": null};
 		vm.submit = function(){
 			console.log("cookies")
 		}
+		$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
+		$scope.drawingControlOptions = {
+			position: google.maps.ControlPosition.TOP_CENTER,
+			drawingModes: [
+				google.maps.drawing.OverlayType.RECTANGLE
+			],
+
+		}
+
+		vm.drawingOptions = {
+			drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+			rectangleOptions: { editable: true, draggable: true}
+		}
+
+		vm.rectangleClicked = function(rect, eventName, arguments, model){
+			console.log("clicked")
+			console.dir(rect)
+
+		}
+		vm.drawingManagerControl = {};
+
+		$scope.$watch('$scope.drawingControlOptions.getDrawingManager', function(val) {
+			if (!$scope.drawingControlOptions.getDrawingManager) {
+				return;
+			}
+
+			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'circlecomplete', function (e) {
+				console.log(e.getBounds());
+			});
+		});
 	}
 
 	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];

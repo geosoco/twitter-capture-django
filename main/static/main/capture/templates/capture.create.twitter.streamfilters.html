@@ -10,3 +10,7 @@
 </div>
 <button class="btn btn-default" ng-click="cctc.submit()">Submit</button>
 <pre>{{ cctc|json }}</pre>
+
+<ui-gmap-google-map center='map.center' zoom='map.zoom'>
+    <ui-gmap-drawing-manager control="drawingControlOptions" options="cctc.drawingOptions"></ui-gmap-drawing-manager>
+</ui-gmap-google-map>
