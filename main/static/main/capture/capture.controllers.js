@@ -75,6 +75,8 @@
 		var vm = this;
 		vm.test = "LKJ";
 		vm.model = {"name": "", "terms": [], "georects": [], "selectedRectangle": null};
+		vm.rects = [];
+		vm.selectedRectangle = null;
 		vm.submit = function(){
 			console.log("cookies")
 		}
@@ -94,17 +96,35 @@
 
 		uiGmapIsReady.promise(1).then(function(instances){
 			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'rectanglecomplete', function (e) {
-				console.log(e.getBounds());
+				vm.rects.push(e);
+				e.addListener('click', vm.rectangleClicked);
+				vm.selectRectangle(e);
 			});
 		})
 
-		vm.rectangleClicked = function(rect, eventName, arguments, model){
-			console.log("clicked")
-			console.dir(rect)
+		vm.selectRectangle = function(rect) {
+			if (vm.selectedRectangle !== null){
+				vm.selectedRectangle.setOptions({fillColor:'black'});
+			}
 
+			vm.selectedRectangle = rect;
+			vm.selectedRectangle.setOptions({fillColor:'blue'});
+		}
+
+		vm.rectangleClicked = function(rect, eventName, arguments, model){
+			vm.selectRectangle(this);
 		}
 		vm.drawingManagerControl = {};
 
+		vm.deleteSelected = function(){
+			if(vm.selectedRectangle !== null){
+				vm.selectedRectangle.setMap(null);
+				var idx = vm.rects.findIndex(function(el){return el == vm.selectedRectangle});
+				if (idx !== undefined){
+					vm.rects.splice(idx, 1)
+				}
+			}
+		}
 		$scope.$watch('$scope.drawingControlOptions.getDrawingManager', function(val) {
 			if (!$scope.drawingControlOptions.getDrawingManager) {
 				return;
