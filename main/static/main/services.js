@@ -57,7 +57,9 @@
 		return $resource( "/api/liveupdates/:id/", {id: "@job_id"}, basicService );
 	}
 
-
+	function JobModificationService($resource) {
+		return $resource( "/api/jobmodifications/:id/", {id: "@id"}, basicService );
+	}
 
 	var services = angular.module('main.services', ['ngResource']);
 
@@ -66,6 +68,7 @@
 	services.factory("Job", JobService );
 	services.factory("Client", ClientService );
 	services.factory("Update", UpdateService );
+	services.factory("JobModification", JobModificationService);
 
 
 })();

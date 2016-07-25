@@ -100,9 +100,35 @@
 	ClientFactory.$inject = ['Client'];
 
 
+	/*
+	 *
+	 * JobModificationFactory
+	 *
+	 */
+
+	 function JobModificationFactory(JobModification) {
+	 	var self = this,
+	 		f = {};
+
+
+	 	f.getJobModifications = function(jobId) {
+	 		return JobModification.query({job: jobId});
+	 	}
+
+	 	f.get = function(id) {
+	 		return JobModification.get({id:id});
+	 	}
+	 }
+
+
+
+
 	angular.module('endpoint.factories', ['main.services'])
 		.factory('CaptureFactory', CaptureFactory)
-		.factory('ClientFactory', ClientFactory);
+		.factory('ClientFactory', ClientFactory)
+		.factory('JobModificationFactory', JobModificationFactory);
+
+
 
 
 
