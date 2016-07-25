@@ -302,5 +302,7 @@ class JobModificationViewSet(viewsets.ModelViewSet):
                               BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
+    filter_fields = (
+            'id', 'job', 'modified_by')
 
 

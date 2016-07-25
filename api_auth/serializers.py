@@ -138,12 +138,12 @@ class WorkerSerializer(serializers.ModelSerializer):
 
 
 class JobModificationSerializer(serializers.ModelSerializer):
-	job_id = JobIdSerializer()
 	modified_by_username = serializers.CharField(
 		read_only=True,
 		source="modified_by.username")
+	changes = serializers.JSONField()
 
 	class Meta:
 		model = JobModification
-		fields = ('id', 'changes', 'job_id', 'modified_by', 'modified_by_username',)
+		fields = ('id', 'changes', 'job', 'modified_by', 'modified_by_username',)
 
