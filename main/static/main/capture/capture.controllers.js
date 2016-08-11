@@ -102,6 +102,15 @@
 		}
 
 
+		vm.onCreationSuccess = function(obj) {
+			console.log("successfully created");
+		}
+
+		vm.onCreationError = function(response) {
+			console.log("failed to create object");
+
+			console.dir(response);
+		}
 
 
 		vm.submit = function(){
@@ -109,8 +118,19 @@
 			console.log("cookies");
 			angular.forEach($scope.form.$error.required, function(field) {
 				field.$setTouched();
-			})
+			});
+
+			if($scope.form.$valid) {
+				// set the description to the name initially
+				vm.model.description = vm.model.name;
+
+
+				var promise = CaptureFactory.create(vm.model);
+
+				promise.$promise.then(vm.onCreationSuccess, vm.OnCreationError);
+			}
 		}
+
 
 		vm.selectRectangle = function(rect) {
 			if (vm.selectedRectangle !== null){

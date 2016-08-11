@@ -57,6 +57,12 @@
 			});
 		}
 
+
+
+		self.create = function(args) {
+			return Job.save(args);
+		}
+
 		return self;
 	}
 
