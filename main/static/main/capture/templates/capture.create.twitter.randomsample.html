@@ -1,6 +1,15 @@
-<fieldset class="form-group">
-    <label for="NameTextarea">Capture name</label>
-    <textarea class="form-control" id="NameTextarea" rows="1" ng-model="cctc.model.name"></textarea>
-</fieldset>
+<div ng-form="form">
+    <fieldset class="form-group">
+        <label for="NameTextarea">Capture name</label>
+        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
+        <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
+            <p ng-if="form.name.$error.required">A name is required</p>
+        </div>
+    </fieldset>
 
-<button class="btn btn-primary" ng-click="ccrc.submit()">Submit</button>
+    <button class="btn btn-primary" ng-click="cctc.submit()">Submit</button>
+    <div class="alert alert-danger" role="alert" ng-show="form.$invalid && cctc.submitted">
+        <p>Some problems were detected with your capture settings. Please check above to resolve.</p>
+    </div>
+
+</div>

@@ -1,28 +1,55 @@
-<fieldset class="form-group">
-    <label for="NameTextarea">Capture name</label>
-    <input type="text" class="form-control" id="NameTextarea" ng-model="ccrc.model.name">
-</fieldset>
-<div id="Keywords">
+<div ng-form="form">
     <fieldset class="form-group">
-    <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb")</label>
-    <textarea class="form-control" id="KeywordsTextarea" rows="3" ng-model="ccrc.model.terms"></textarea>
+        <label for="NameTextarea">Capture name</label>
+        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="ccrc.model.name" required>
+        <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
+            <p ng-if="form.name.$error.required">A name is required</p>
+        </div>
     </fieldset>
+
+
+    <div id="Keywords">
+        <fieldset class="form-group">
+        <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb")</label>
+        <textarea class="form-control" id="KeywordsTextarea" rows="3" name="keywords" ng-model="ccrc.model.terms" required></textarea>
+        <div class="alert alert-danger" role="alert" ng-show="form.keywords.$touched && form.keywords.$invalid">
+            <p ng-if="form.keywords.$error.required">At least one term is required</p>
+        </div>
+        </fieldset>
+    </div>
+
+
+    <div id="Subreddits">
+        <fieldset class="form-group">
+        <label for="SubredditsTextarea">Subreddits to capture</label>
+        <textarea class="form-control" id="SubredditsTextarea" rows="3" name="subreddits" ng-model="ccrc.model.subreddits" required>news, worldnews, politics, truenews</textarea>
+        <div class="alert alert-danger" role="alert" ng-show="form.subreddits.$touched && form.subreddits.$invalid && form.threads.$invalid">
+            <p ng-if="form.subreddits.$error.required">At least one subreddit or thread is required</p>
+        </div>
+        </fieldset>
+    </div>
+
+
+    <div id="Threads">
+        <fieldset class="form-group">
+        <label for="ThreadsTextarea">Threads to capture if applicable (by id, eg: 4dgynt)</label>
+        <textarea class="form-control" id="SubredditsTextarea" rows="3" name="threads" ng-model="ccrc.model.threads" required></textarea>
+        <div class="alert alert-danger" role="alert" ng-show="form.threads.$touched && form.threads.$invalid && form.subreddits.$invalid">
+            <p ng-if="form.threads.$error.required">At least one subreddit or thread is required</p>
+        </div>
+        </fieldset>
+    </div>
+
+
+    <div id="additional options">
+        <label>
+            <input type="checkbox" ng-model="ccrc.model.chainrxn"> If a comment links to another relevant thread, capture that thread too [broken]
+        </label>
+    </div>
+
+
+    <button class="btn btn-primary" ng-click="ccrc.submit()">Submit</button>
+    <div class="alert alert-danger" role="alert" ng-show="form.$invalid && ccrc.submitted">
+        <p>Some problems were detected with your capture settings. Please check above to resolve.</p>
+    </div>
 </div>
-<div id="Subreddits">
-    <fieldset class="form-group">
-    <label for="SubredditsTextarea">Subreddits to capture</label>
-    <textarea class="form-control" id="SubredditsTextarea" rows="3" ng-model="ccrc.model.subreddits">news, worldnews, politics, truenews</textarea>
-    </fieldset>
-</div>
-<div id="Threads">
-    <fieldset class="form-group">
-    <label for="ThreadsTextarea">Threads to capture if applicable (by id, eg: 4dgynt)</label>
-    <textarea class="form-control" id="SubredditsTextarea" rows="3" ng-model="ccrc.model.threads"></textarea>
-    </fieldset>
-</div>
-<div id="additional options">
-    <label>
-        <input type="checkbox" ng-model="ccrc.model.chainrxn"> If a comment links to another relevant thread, capture that thread too [broken]
-    </label>
-</div>
-<button class="btn btn-primary" ng-click="ccrc.submit()">Submit</button>
