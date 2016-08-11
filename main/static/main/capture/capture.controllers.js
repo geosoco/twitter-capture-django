@@ -83,13 +83,15 @@
 		vm.rects = [];
 		vm.selectedRectangle = null;
 		vm.submitted = false;
-		vm.submit = function(){
-			vm.submitted = true;
-			console.log("cookies");
-			angular.forEach($scope.form.$error.required, function(field) {
-				field.$setTouched();
-			})
+
+
+		vm.drawingManagerControl = {};
+		vm.drawingOptions = {
+			drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+			rectangleOptions: { editable: true, draggable: true}
 		}
+
+
 		$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 		$scope.drawingControlOptions = {
 			position: google.maps.ControlPosition.TOP_CENTER,
@@ -99,18 +101,16 @@
 
 		}
 
-		vm.drawingOptions = {
-			drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
-			rectangleOptions: { editable: true, draggable: true}
-		}
 
-		uiGmapIsReady.promise(1).then(function(instances){
-			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'rectanglecomplete', function (e) {
-				vm.rects.push(e);
-				e.addListener('click', vm.rectangleClicked);
-				vm.selectRectangle(e);
-			});
-		})
+
+
+		vm.submit = function(){
+			vm.submitted = true;
+			console.log("cookies");
+			angular.forEach($scope.form.$error.required, function(field) {
+				field.$setTouched();
+			})
+		}
 
 		vm.selectRectangle = function(rect) {
 			if (vm.selectedRectangle !== null){
@@ -124,7 +124,7 @@
 		vm.rectangleClicked = function(rect, eventName, arguments, model){
 			vm.selectRectangle(this);
 		}
-		vm.drawingManagerControl = {};
+		
 
 		vm.deleteSelected = function(){
 			if(vm.selectedRectangle !== null){
@@ -135,6 +135,20 @@
 				}
 			}
 		}
+
+
+		//
+		// init code
+		//
+
+		uiGmapIsReady.promise(1).then(function(instances){
+			google.maps.event.addListener($scope.drawingControlOptions.getDrawingManager(), 'rectanglecomplete', function (e) {
+				vm.rects.push(e);
+				e.addListener('click', vm.rectangleClicked);
+				vm.selectRectangle(e);
+			});
+		})
+
 		$scope.$watch('$scope.drawingControlOptions.getDrawingManager', function(val) {
 			if (!$scope.drawingControlOptions.getDrawingManager) {
 				return;
