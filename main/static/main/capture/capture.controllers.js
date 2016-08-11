@@ -82,8 +82,13 @@
 		vm.model = {"name": "", "terms": [], "georects": [], "selectedRectangle": null};
 		vm.rects = [];
 		vm.selectedRectangle = null;
+		vm.submitted = false;
 		vm.submit = function(){
-			console.log("cookies")
+			vm.submitted = true;
+			console.log("cookies");
+			angular.forEach($scope.form.$error.required, function(field) {
+				field.$setTouched();
+			})
 		}
 		$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 		$scope.drawingControlOptions = {
