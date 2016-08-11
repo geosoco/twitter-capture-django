@@ -1,6 +1,10 @@
+<div ng-form="form">
 <fieldset class="form-group">
     <label for="NameTextarea">Capture name</label>
-    <input type="text" class="form-control" id="NameTextarea" ng-model="cctc.model.name">
+    <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
+    <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
+    	<p ng-if="form.name.$dirty && form.name.$error.required">A name is required</p>
+    </div>
 </fieldset>
 <div id="Keywords">
     <fieldset class="form-group">
@@ -13,3 +17,5 @@
 <ui-gmap-google-map center='map.center' zoom='map.zoom'>
     <ui-gmap-drawing-manager control="drawingControlOptions" options="cctc.drawingOptions"></ui-gmap-drawing-manager>
 </ui-gmap-google-map>
+
+</div>
