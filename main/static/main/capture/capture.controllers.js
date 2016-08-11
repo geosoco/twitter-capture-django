@@ -59,7 +59,12 @@
 
 	function CaptureRootCtrl($stateParams, $scope, CaptureFactory) {
 		$scope.test = "LKJ";
-		$scope.model = CaptureFactory.get($stateParams.id);
+		if($stateParams.id !== undefined) {
+			$scope.model = CaptureFactory.get($stateParams.id);	
+		} else {
+			$scope.model = {};
+		}
+		
 	}
 
 	CaptureRootCtrl.$inject = ['$stateParams', '$scope', 'CaptureFactory'];
