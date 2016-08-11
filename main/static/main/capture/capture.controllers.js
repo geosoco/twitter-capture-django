@@ -194,8 +194,13 @@
 		var vm = this;
 		vm.test = "LKJ";
 		vm.model = {"name": "", "terms": [], "subreddits": [], "threads": [], "chainrxn": false};
+		vm.submitted = false;
 		vm.submit = function(){
+			vm.submitted = true;
 			console.log("cookies")
+			angular.forEach($scope.form.$error.required, function(field) {
+				field.$setTouched();
+			})
 		}
 	}
 

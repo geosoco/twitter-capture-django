@@ -51,7 +51,7 @@ class Job(FullAuditModel):
     description = models.TextField(
         help_text="A detailed description of the event. Please add possible rumors to this as the event unfolds.")
 
-    twitter_keywords = models.TextField(
+    keywords = models.TextField(
         help_text="A comma separated list of terms. eg. term1, term2, term3")
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_CREATED)

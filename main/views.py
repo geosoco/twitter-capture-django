@@ -78,7 +78,7 @@ class CaptureCreate(LoginRequiredMixin, CreateView):
 	"""
 
 	model = Job
-	fields = [ 'name', 'description', 'twitter_keywords', 'assigned_worker' ]
+	fields = [ 'name', 'description', 'keywords', 'assigned_worker' ]
 	template_name = 'capturejob/create.html'
 
 	def get_form(self, form_class):
@@ -114,7 +114,7 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 	"""
 
 	model = Job
-	fields = [ 'name', 'description', 'twitter_keywords', 'assigned_worker' ]
+	fields = [ 'name', 'description', 'keywords', 'assigned_worker' ]
 	template_name = 'capturejob/create.html'
 
 	def get_form(self, form_class):
@@ -131,9 +131,14 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 		old = Job.objects.get(pk=self.object.pk)
 
 		logger.debug("doing modification")
-		logger.debug("name: %s -> %s"%(old.name , form.instance.name))
-		logger.debug("description: %s -> %s"%(old.description , form.instance.description))
-		logger.debug("keywords: %s -> %s"%(self.object.twitter_keywords , form.instance.twitter_keywords))
+		logger.debug(
+			"name: %s -> %s", old.name, form.instance.name)
+		logger.debug(
+			"description: %s -> %s",
+			old.description, form.instance.description)
+		logger.debug(
+			"keywords: %s -> %s",
+			self.object.keywords, form.instance.keywords)
 
 		# copy over the assigned worker
 		form.instance.assigned_worker = old.assigned_worker
@@ -152,28 +157,28 @@ class CaptureUpdate(LoginRequiredMixin, UpdateView):
 			desc['new'] = form.instance.description
 			diff['description'] = desc
 
-		if form.instance.twitter_keywords != old.twitter_keywords:
+		if form.instance.keywords != old.keywords:
 			tk = {}
-			tk['old'] = old.twitter_keywords
-			tk['new'] = form.instance.twitter_keywords
-			old_keywords = set([w.strip() for w in old.twitter_keywords.split(',')])
-			new_keywords = set([w.strip() for w in form.instance.twitter_keywords.split(',')])
+			tk['old'] = old.keywords
+			tk['new'] = form.instance.keywords
+			old_keywords = set([w.strip() for w in old.keywords.split(',')])
+			new_keywords = set([w.strip() for w in form.instance.keywords.split(',')])
 			additions = new_keywords - old_keywords
 			deletions = old_keywords - new_keywords
 			tk['additions'] = list(additions)
 			tk['deletions'] = list(deletions)
 			# set keywords dict
-			diff['twitter_keywords'] = tk
+			diff['keywords'] = tk
 
 		# serialize the text
 		diff_text = json.dumps(diff)
 
 		modification = JobModification(
-				changes = diff_text,
-				job = self.object,
-				modified_by = self.request.user,
-				modified_date = now
-			)
+			changes=diff_text,
+			job=self.object,
+			modified_by=self.request.user,
+			modified_date=now
+		)
 
 		modification.save()
 

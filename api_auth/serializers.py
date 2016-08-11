@@ -79,7 +79,7 @@ class JobSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Job
 		fields = (
-			'id', 'url', 'name', 'description', 'twitter_keywords',
+			'id', 'url', 'name', 'description', 'keywords',
 			'status', 'task_id', 'first_started', 'started', 'stopped',
 			'assigned_worker', 'assigned_worker_username', 'total_count',
 			'rate', 'ping_date', 'archived_date', 'archived_by',

@@ -227,11 +227,11 @@
 	        <textarea class="form-control" cols="40" id="id_description" name="description" rows="4" ng-model="job.description" required=""></textarea>
             <div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.description"><strong>Error</strong> {{error}}</div>
 		</div>
-		<div class="form-group twitter_keywords " ng-hide="$hidden_fields.indexOf('twitter_keywords') >= 0">
-            <label class="control-label" for="id_twitter_keywords">Twitter keywords *</label>
+		<div class="form-group keywords " ng-hide="$hidden_fields.indexOf('keywords') >= 0">
+            <label class="control-label" for="id_keywords">Twitter keywords *</label>
             <p class="help-block">A comma separated list of terms. eg. term1, term2, term3</p>
-            <textarea class="form-control" cols="40" id="id_twitter_keywords" name="twitter_keywords" rows="3" ng-model="job.twitter_keywords" required=""></textarea>
-            <div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.twitter_keywords"><strong>Error</strong> {{error}}</div>
+            <textarea class="form-control" cols="40" id="id_keywords" name="keywords" rows="3" ng-model="job.keywords" required=""></textarea>
+            <div class="alert alert-danger" role="alert" ng-repeat="error in job.$errors.keywords"><strong>Error</strong> {{error}}</div>
         </div>
 		<div class="form-group assigned_worker " ng-hide="$hidden_fields.indexOf('assigned_worker') >= 0">
 			<label class="control-label" for="id_assigned_worker">Assigned worker *</label>

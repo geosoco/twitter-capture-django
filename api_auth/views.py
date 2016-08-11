@@ -118,10 +118,10 @@ class JobViewSet(viewsets.ModelViewSet):
             desc['new'] = instance.description
             diff['description'] = desc
 
-        if has_value_changed(instance, data, "twitter_keywords"):
+        if has_value_changed(instance, data, "keywords"):
             tk = {}
-            old_kws = data.get('twitter_keywords', {})
-            new_kws = instance.twitter_keywords
+            old_kws = data.get('keywords', {})
+            new_kws = instance.keywords
             tk['old'] = old_kws
             tk['new'] = new_kws
             old_keywords = set([w.strip() for w in old_kws.split(',')])
@@ -131,7 +131,7 @@ class JobViewSet(viewsets.ModelViewSet):
             tk['additions'] = list(additions)
             tk['deletions'] = list(deletions)
             # set keywords dict
-            diff['twitter_keywords'] = tk
+            diff['keywords'] = tk
 
 
         ret = super(JobViewSet, self).perform_update(serializer)

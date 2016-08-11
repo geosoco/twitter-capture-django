@@ -1,24 +1,18 @@
 <div ng-form="form">
-<fieldset class="form-group">
-    <label for="NameTextarea">Capture name</label>
-    <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
-    <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
-    	<p ng-if="form.name.$error.required">A name is required</p>
-    </div>
-</fieldset>
-<div id="Keywords">
     <fieldset class="form-group">
-    <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
-    <textarea class="form-control" id="KeywordsTextarea" rows="3" name="terms" ng-model="cctc.model.terms" required></textarea>
-    <div class="alert alert-danger" role="alert" ng-show="form.terms.$touched && form.terms.$invalid">
-        <p ng-if="form.terms.$error.required">At least one keyword is required</p>
-    </div>
+        <label for="NameTextarea">Capture name</label>
+        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
+        <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
+            <p ng-if="form.name.$error.required">A name is required</p>
+        </div>
     </fieldset>
-</div>
-<button class="btn btn-default" ng-click="cctc.submit()">Submit</button>
-<div class="alert alert-danger" role="alert" ng-show="(form.$invalid && cctc.submitted) || (cctc.submit_errors != null)">
-    <p>Some problems were detected with your capture settings. Please check above to resolve.</p>
-    <div ng-if="cctc.submit_errors != null">
+    <div id="Keywords">
+        <fieldset class="form-group">
+        <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
+        <textarea class="form-control" id="KeywordsTextarea" rows="3" name="terms" ng-model="cctc.model.terms" required></textarea>
+        <div class="alert alert-danger" role="alert" ng-show="(form.terms.$touched && form.terms.$invalid) || (cctc.submit_errors != null) ">
+            <p ng-if="form.terms.$error.required">At least one keyword is required</p>
+            <div ng-if="cctc.submit_errors != null">
         <ul>
             <li ng-repeat="(field,msgs) in cctc.submit_errors"><b>{{field}}</b>
                 <ul>
@@ -28,15 +22,24 @@
             </li>
         </ul>
     </div>
-</div>
-<a ng-click="cctc.deleteSelected()">Delete</a>
-<ui-gmap-google-map center='map.center' zoom='map.zoom'>
-    <ui-gmap-drawing-manager control="drawingControlOptions" options="cctc.drawingOptions"></ui-gmap-drawing-manager>
-</ui-gmap-google-map>
-<pre>
-    {{cctc.submit_errors|json}}
-</pre>
-<pre>
-    {{ form|json }}
-</pre>
+
+        </div>
+        </fieldset>
+    </div>
+
+
+    <button class="btn btn-default" ng-click="cctc.submit()">Submit</button>
+    <div class="alert alert-danger" role="alert" ng-show="form.$invalid && cctc.submitted">
+        <p>Some problems were detected with your capture settings. Please check above to resolve.</p>
+    </div>
+
+
+    <a ng-click="cctc.deleteSelected()">Delete</a>
+    <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+        <ui-gmap-drawing-manager control="drawingControlOptions" options="cctc.drawingOptions"></ui-gmap-drawing-manager>
+    </ui-gmap-google-map>
+    <pre>
+        {{ form|json }}
+    </pre>
+
 </div>

@@ -16,7 +16,7 @@ class JobAdmin(FullAuditBaseAdmin):
 	Job Admin
 	"""
 
-	list_display = ('name', 'description', 'twitter_keywords')
+	list_display = ('name', 'description', 'keywords')
 
 
 
