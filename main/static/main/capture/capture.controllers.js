@@ -83,6 +83,7 @@
 		vm.rects = [];
 		vm.selectedRectangle = null;
 		vm.submitted = false;
+		vm.submit_errors = null;
 
 
 		vm.drawingManagerControl = {};
@@ -110,6 +111,8 @@
 			console.log("failed to create object");
 
 			console.dir(response);
+
+			vm.submit_errors = response.data;
 		}
 
 
@@ -125,9 +128,9 @@
 				vm.model.description = vm.model.name;
 
 
-				var promise = CaptureFactory.create(vm.model);
+				var obj = CaptureFactory.create(vm.model);
 
-				promise.$promise.then(vm.onCreationSuccess, vm.OnCreationError);
+				obj.$promise.then(vm.onCreationSuccess, vm.onCreationError);
 			}
 		}
 
