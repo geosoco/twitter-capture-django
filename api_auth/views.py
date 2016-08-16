@@ -14,7 +14,53 @@ import django_filters
 from django.db import connection, transaction
 from django.utils import timezone
 import json
+from rest_framework_filters import backends
+import rest_framework_filters as filters
 
+
+class TestFilter(backends.DjangoFilterBackend):
+    def __init__(self):
+        print ">> creating"
+        print super(TestFilter, self).__init__
+        for base in self.__class__.__bases__:
+            print base.__module__, base.__name__
+        return super(TestFilter, self).__init__()
+
+    def get_filter_class(self, view, queryset=None):
+        print ">> get_filter_class"
+        if queryset:
+            print queryset.query
+        else:
+            print "no queryset"
+        ret = super(TestFilter, self).get_filter_class(view, queryset)
+
+        if queryset:
+            print queryset.query
+        else:
+            print "no queryset"
+
+        print "\n>> got back", ret
+        od = ret().get_filters()
+        print "\n>> -"
+        print json.dumps(od)
+        #print "\n>> +", ret(view.request.query_params, queryset=queryset).qs
+
+        return ret
+
+    def filter_queryset(self, request, queryset, view):
+        print ">> filter_queryset"
+        return super(TestFilter, self).filter_queryset(
+            request, queryset, view)
+
+    def get_filters(self):
+
+        print ">> get_filters"
+        ret = super(TestFilter, self).get_filter()
+
+        print json.dumps(ret)
+        print "\n"
+
+        return ret
 
 
 def has_value_changed(instance, data, name):
@@ -54,8 +100,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
-class JobFilterSet(django_filters.FilterSet):
-    active = django_filters.BooleanFilter(name="archived_date__isnull")
+class JobFilterSet(filters.FilterSet):
+    active = filters.BooleanFilter(name="archived_date", lookup_expr="isnull")
 
     class Meta:
         model = Job
@@ -72,6 +118,8 @@ class JobViewSet(viewsets.ModelViewSet):
                               BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
     filter_class = JobFilterSet
+    #filter_backends = (backends.DjangoFilterBackend,)
+    #filter_backends = (TestFilter,)
 
     def perform_create(self, serializer):
         serializer.created_by = self.request.user

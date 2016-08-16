@@ -51,6 +51,7 @@
 				if(id >= 0) {
 					self.jobs = self.jobs.splice(id,1);
 				}
+
 			}, function(error) {
 				console.error("error archiving: " + error);
 				console.dir(error);

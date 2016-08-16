@@ -18,6 +18,14 @@
 		this.archive = function(job) {
 			console.log("archiving2 " + job.id);
 		}		
+
+
+		this.active_jobs.$promise.then(function(data){
+			console.log("jobs:")
+			console.dir(data);
+		}, function(err){
+			console.err("error!");
+		})
 	}
 	CaptureListCtrl.$inject = ['$scope', 'CaptureFactory'];
 

@@ -20,7 +20,12 @@
 				<ul class="styleless">
 					<li ng-repeat="job in jobs.active_jobs" ng-include="'static/main/capture/templates/capture.list.item.html'"></li>
 				</ul>
+				<pre>
+					{{jobs|json}}
+				</pre>
+
 			</div>
 		</div>
 	</div>
+
 </div>
