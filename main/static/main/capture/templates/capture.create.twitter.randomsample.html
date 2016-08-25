@@ -1,9 +1,10 @@
 <div ng-form="form">
     <fieldset class="form-group">
         <label for="NameTextarea">Capture name</label>
-        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
+        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required ng-pattern="/^[\w\-\ ]*$/">
         <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
             <p ng-if="form.name.$error.required">A name is required</p>
+            <p ng-if="form.name.$error.pattern">Name must consist of only letters, numbers, underscores, dashes, and spaces</p>
         </div>
     </fieldset>
 

@@ -1,29 +1,31 @@
 <div ng-form="form">
     <fieldset class="form-group">
         <label for="NameTextarea">Capture name</label>
-        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required>
+        <input type="text" class="form-control" id="NameTextarea" name="name" ng-model="cctc.model.name" required ng-pattern="/^[\w\-\ ]*$/">
         <div class="alert alert-danger" role="alert" ng-show="form.name.$touched && form.name.$invalid">
             <p ng-if="form.name.$error.required">A name is required</p>
+            <p ng-if="form.name.$error.pattern">Name must consist of only letters, numbers, underscores, dashes, and spaces</p>
         </div>
     </fieldset>
+
+
     <div id="Keywords">
         <fieldset class="form-group">
-        <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
-        <textarea class="form-control" id="KeywordsTextarea" rows="3" name="terms" ng-model="cctc.model.terms" required></textarea>
-        <div class="alert alert-danger" role="alert" ng-show="(form.terms.$touched && form.terms.$invalid) || (cctc.submit_errors != null) ">
-            <p ng-if="form.terms.$error.required">At least one keyword is required</p>
-            <div ng-if="cctc.submit_errors != null">
-        <ul>
-            <li ng-repeat="(field,msgs) in cctc.submit_errors"><b>{{field}}</b>
-                <ul>
-                    <li ng-repeat="msg in msgs">{{msg}}</li>
-                </ul>
+            <label for="KeywordsTextarea">Search terms (separated by comma, eg. "shooter, bomb, #MakeDonaldDrumpfAgain")</label>
+            <textarea class="form-control" id="KeywordsTextarea" rows="3" name="terms" ng-model="cctc.model.terms" required></textarea>
+            <div class="alert alert-danger" role="alert" ng-show="(form.terms.$touched && form.terms.$invalid) || (cctc.submit_errors != null) ">
+                <p ng-if="form.terms.$error.required">At least one keyword is required</p>
+                <div ng-if="cctc.submit_errors != null">
+                    <ul>
+                        <li ng-repeat="(field,msgs) in cctc.submit_errors"><b>{{field}}</b>
+                        <ul>
+                            <li ng-repeat="msg in msgs">{{msg}}</li>
+                        </ul>
 
-            </li>
-        </ul>
-    </div>
-
-        </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </fieldset>
     </div>
 
