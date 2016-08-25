@@ -49,10 +49,12 @@ class Job(FullAuditModel):
     name = models.CharField(max_length=64, blank=False, null=False, validators=[alphanumeric,alphanumeric_start], unique=True, 
         help_text="A unique name for this capture. Can only contain alpha-numeric characters, spaces, dashes (-), and underscores (_). ")
     description = models.TextField(
-        help_text="A detailed description of the event. Please add possible rumors to this as the event unfolds.")
+        help_text="A detailed description of the event. Please add possible rumors to this as the event unfolds.",
+        null=True)
 
     keywords = models.TextField(
-        help_text="A comma separated list of terms. eg. term1, term2, term3")
+        help_text="A comma separated list of terms. eg. term1, term2, term3",
+        null=True)
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_CREATED)
 

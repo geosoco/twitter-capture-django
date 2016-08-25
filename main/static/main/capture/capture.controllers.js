@@ -134,6 +134,8 @@
 			if($scope.form.$valid) {
 				// set the description to the name initially
 				vm.model.description = vm.model.name;
+				vm.model.keywords = null;
+				vm.model.status = 0;
 
 
 				var obj = CaptureFactory.create(vm.model);
