@@ -32,6 +32,15 @@ function HomeConfig($stateProvider) {
 				},
 			}
 		})
+		.state("capture.edit", {
+			url: "/edit/:id",
+			views: {
+				"main@capture": {
+					templateUrl: "/static/main/capture/templates/capture.edit.html",
+					controller: "CaptureEditCtrl as capture"
+				},
+			}
+		})		
 		.state("capture.create.reddit", {
 			url: "/reddit",
 			views: {

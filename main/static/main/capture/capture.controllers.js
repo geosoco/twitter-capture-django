@@ -84,7 +84,7 @@
 	 *
 	 */
 
-	function CaptureCreateTwitterCtrl($stateParams, $scope, uiGmapIsReady, CaptureFactory) {
+	function CaptureCreateTwitterCtrl($stateParams, $scope, $state, uiGmapIsReady, CaptureFactory) {
 		var vm = this;
 		vm.test = "LKJ";
 		vm.model = {"name": "", "terms": [], "georects": [], "selectedRectangle": null};
@@ -191,7 +191,7 @@
 		});
 	}
 
-	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', 'uiGmapIsReady', 'CaptureFactory'];
+	CaptureCreateTwitterCtrl.$inject = ['$stateParams', '$scope', '$state', 'uiGmapIsReady', 'CaptureFactory'];
 
 
 	/*
@@ -227,6 +227,8 @@
 		var vm = this;
 
 		vm.step = $stateParams.step;
+
+		this.model = CaptureFactory.get($stateParams.id);
 		console.log(vm.step);
 	}
 
